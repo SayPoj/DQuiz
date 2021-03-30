@@ -1,0 +1,271 @@
+<div class="w-100 h-100 bg-dark" *ngIf="!game && !team ">
+  <app-loading-fire text="Загрузка данных ..." textColor="light"></app-loading-fire>
+</div>
+<div class="w-100 h-100 overflow-auto"
+     *ngIf="game && team && team.secret"
+     [ngStyle]="{'background':game?'fixed #000 center repeat-x url('+game.posterUrl+')':''}"
+>
+  <div class=" min-vh-100 row align-items-center m-0 p-2 p-md-5"
+       style="-webkit-backdrop-filter:  opacity(60%) blur(15px);backdrop-filter: opacity(60%) blur(15px)">
+
+    <div class="card col  bg-dark text-light text-center mx-auto p-0"
+         style="max-width: 1076px;box-shadow: 0 80px 60px -60px rgba(21, 21, 21, 0.57), 0 -80px 60px -60px rgba(21, 21, 21, 0.57)">
+      <div class="text-center text-light row m-0  navbar navbar-collapse navbar-dark card-header accordion"
+           id="accordionExample">
+        <a class="col-auto navbar-brand p-0 m-0" href="#">
+          <img src="../../../../assets/logo.png" height="40px" class="d-inline-block align-top" alt="">
+        </a>
+        <h1 id="navBarGameName"
+            class="col collapse  show text-truncate m-0 "
+        >
+
+
+          <span>{{game ? game.name : ''}}</span>
+          <span class="text-muted"> | </span>
+          <span>{{team ? team.name : ''}}</span>
+          <span class="text-muted"> | Информация о регистрации</span>
+          <span *ngIf="game.state == 4 || game.state == 5" class="text-muted"> | Игра уже закончилась</span>
+        </h1>
+        <button id="collapseTwoBtn"
+                class="navbar-toggler col-auto collapse show"
+                data-toggle="collapse"
+                data-target="#navbarNavDropdown,#navBarGameName">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse justify-content-center navbar-collapse text-center" id="navbarNavDropdown">
+          <hr>
+          <h1 class=" col m-0 text-center">
+            <span class="text-muted">Страница информации о регистрации команды </span>
+            <strong>{{team ? team.name : ''}} </strong>
+            <span class="text-muted">на игру </span>
+            <strong>{{game ? game.name : ''}} </strong>
+            <span *ngIf="game.state == 4 || game.state == 5" class="text-muted"> | Игра уже закончилась</span>
+          </h1>
+          <hr>
+          <div class="row justify-content-center">
+            <div class="col-auto">
+              <button class=" m-1 btn btn-outline-primary"
+                      (click)="this.router.navigate(['game/'+game.id])">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-bar-left" fill="currentColor"
+                     xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd"
+                        d="M12.5 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5zM10 8a.5.5 0 0 1-.5.5H3.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L3.707 7.5H9.5a.5.5 0 0 1 .5.5z"/>
+                </svg>
+                <span class="ml-2 d-inline text-truncate">На страницу игры</span>
+              </button>
+            </div>
+            <div class="col-auto">
+              <button class="m-1 btn btn-outline-danger"
+                      (click)="this.router.navigate([''])">
+                <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-box-arrow-left" fill="currentColor"
+                     xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd"
+                        d="M4.354 11.354a.5.5 0 0 0 0-.708L1.707 8l2.647-2.646a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708 0z"/>
+                  <path fill-rule="evenodd" d="M11.5 8a.5.5 0 0 0-.5-.5H2a.5.5 0 0 0 0 1h9a.5.5 0 0 0 .5-.5z"/>
+                  <path fill-rule="evenodd"
+                        d="M14 13.5a1.5 1.5 0 0 0 1.5-1.5V4A1.5 1.5 0 0 0 14 2.5H7A1.5 1.5 0 0 0 5.5 4v1.5a.5.5 0 0 0 1 0V4a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5H7a.5.5 0 0 1-.5-.5v-1.5a.5.5 0 0 0-1 0V12A1.5 1.5 0 0 0 7 13.5h7z"/>
+                </svg>
+                <span class="ml-2 d-inline text-truncate">На главную страницу</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card bg-dark">
+
+
+        <div class="card-body">
+
+          <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            Информация об игре продублирована на почту капитана команды <strong>{{team.captain.email}}</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Поделитесь этой страницей только с участниками своей команды.</strong> <br>
+            На данной странице находится вся необходимая для игры информация. Сохраните ее до окончания игры. <br>
+            <strong>Внимательно</strong> прочитайте всю информацию и пройдите необходимые проверки.
+            <hr class="m-1">
+            <button class="btn btn-outline-success"
+                    type="button"
+                    ngxClipboard
+                    [cbContent]="'https://dquiz.ru/game-registration/info/'+game.id+'/'+team.id+'/'+team.secret"
+                    (click)="shareLinkButton.textContent = 'Ссылка скопирована'; shareLinkButton.classList.add('btn-success');shareLinkButton.classList.remove('btn-outline-success')"
+                    #shareLinkButton>
+              Скопировать ссылку на страницу
+            </button>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="row align-items-center mx-0 mb-4 mb-lg-0">
+            <div class="col-lg-5 px-0 mb-2 mb-lg-0 pb-2 pb-lg-0">
+              <img class="rounded w-100" src="{{game.posterUrl}}">
+            </div>
+            <div class="col-lg-7 mx-2 mx-lg-0 px-0 px-lg-4 pt-2 pt-lg-0">
+              <div class=" text-left">
+                <span class="text-muted"><u>Краткое описание</u>: </span>
+                <span class="text-light">{{game.shortDescription}}</span>
+                <hr *ngIf="game.tags.length">
+                <div class="row m-0" *ngIf="game.tags.length">
+                  <span class="text-muted my-auto mr-2"><u>Тематика игры</u>: </span>
+                  <mat-chip-list>
+                    <mat-chip *ngFor="let tag of game.tags" [selectable]="false" [removable]="false">
+                      {{tag.name}}
+                    </mat-chip>
+                  </mat-chip-list>
+                </div>
+                <hr>
+                <span class="text-muted"><u>Дата и время проведения</u>: </span> <span
+                class="text-light">{{game.dateTime | date:'d MMMM y (EEEE) в HH:mm'}}</span>
+
+                <div class="border-left pl-2 ml-3">
+                  <span class="text-muted">Сбор с: </span>
+                  <span class="text-primary">{{game.dateTime | date:'HH:mm'}}</span>
+                  <br>
+                  <span class="text-muted">Начало в: </span>
+                  <span class="text-primary">{{newDate(game.dateTime) | date:'HH:mm'}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion rounded-0 border-0" id="accordion">
+          <div class="card bg-dark">
+            <div class="card-header">
+              <h2 class="mb-0">
+                <button class="btn btn-outline-primary" type="button" data-toggle="collapse"
+                        data-target="#gameFullDescription" aria-expanded="true" aria-controls="gameFullDescription"
+                        (click)="scrollDownDescription.classList.remove('scrollDownButton')">
+                  Описание игры
+                  <svg #scrollDownDescription width="1em" height="1em" viewBox="0 0 16 16"
+                       class="scrollDownButton bi bi-caret-down-fill" fill="currentColor"
+                       xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                  </svg>
+                </button>
+              </h2>
+            </div>
+
+            <div id="gameFullDescription" class="collapse " aria-labelledby="headingOne" data-parent="#accordion">
+              <div class="card-body text-left" id="fullDescription"></div>
+            </div>
+          </div>
+          <div class="card bg-dark">
+            <div class="card-header" id="headingTwo">
+              <h2 class="mb-0">
+                <button class="btn btn-outline-primary " type="button" data-toggle="collapse"
+                        data-target="#gameUrlAndSecret" aria-expanded="false" aria-controls="gameUrlAndSecret"
+                        (click)="scrollDownGameUrlAndSecret.classList.remove('scrollDownButton')"
+                >
+                  Данные для игры
+                  <svg #scrollDownGameUrlAndSecret width="1em" height="1em" viewBox="0 0 16 16"
+                       class="bi bi-caret-down-fill scrollDownButton" fill="currentColor"
+                       xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                  </svg>
+                </button>
+              </h2>
+            </div>
+            <div id="gameUrlAndSecret" class="collapse" aria-labelledby="gameUrlAndSecret" data-parent="#accordion">
+              <div class="card-body">
+                <div class="card-body text-light">
+                  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    Проверьте свое оборудование перед игрой <a
+                    href="/equipment-check"
+                    target="_blank"
+                  ><strong><u>на странице технических требований.</u></strong></a>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+
+                    <strong>Заранее</strong> договоритесь со своей командой кто является капитаном. <br>
+                    Капитан команды заполняет форму ответов, остальные игроки участвуют в обсуждениях в командном
+                    видео-чате. <br>
+                    Форма ответов должна заполняться только <strong>одним</strong> человеком!
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+
+
+                  <div class="card card-body bg-dark p-0">
+
+
+                    <table class="table table-dark">
+                      <thead>
+                      <tr>
+                        <th colspan="2" class="align-middle"><h1 class="m-0">Ссылки на игру</h1></th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr>
+                        <th scope="row" class="align-middle">Секретный код:</th>
+                        <td class="row m-0 justify-content-center">
+                          <label class=" input-group-text w-auto rounded" style="letter-spacing: 0.7em; font-size: 1.2rem;" >{{team.secret}}</label>
+
+                          <button
+                            class="btn btn-outline-success rounded ml-2"
+                            type="button"
+                            ngxClipboard
+                            [cbContent]="team.secret"
+                            (click)="copyButton.textContent = 'Скопировано'"
+                            #copyButton
+                          > Скопировать
+                          </button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th class="align-middle" scope="row">Ссылка на игру: <span class="text-danger">*</span></th>
+                        <td class="align-middle"><h1 class="text-primary m-0"><a target="_blank" href="/game/{{game.id}}/{{team.id}}">
+                          http://dquiz.ru/game/{{game.id}}/{{team.id}} </a></h1></td>
+                      </tr>
+                      <tr>
+                        <th class="align-middle" scope="row">Прямой вход для <ins><strong>капитана</strong></ins>:</th>
+                        <td class="align-middle"><h1 class="text-primary m-0"><a target="_blank" href="/game/{{game.id}}/{{team.id}}?teamSecret={{team.secret}}&isCaptain=true">
+                          http://dquiz.ru/game/{{game.id}}/{{team.id}}?teamSecret={{team.secret}}&isCaptain=true </a></h1></td>
+                      </tr>
+                      <tr>
+                        <th class="align-middle" scope="row">Прямой вход для <ins><strong>участника</strong></ins>:</th>
+                        <td class="align-middle"><h1 class="text-primary m-0"><a target="_blank" href="/game/{{game.id}}/{{team.id}}?teamSecret={{team.secret}}">
+                          http://dquiz.ru/game/{{game.id}}/{{team.id}}?teamSecret={{team.secret}} </a></h1></td>
+                      </tr>
+                      <tr>
+                        <th class="align-middle" scope="row">Отдельная страница для формы ответов: </th>
+                        <td class="align-middle"><h1 class="text-primary m-0"><a target="_blank" href="/game/{{game.id}}/{{team.id}}/answer-form?teamSecret={{team.secret}}">
+                           http://dquiz.ru/game/{{game.id}}/{{team.id}}/answer-form?teamSecret={{team.secret}} </a></h1></td>
+                      </tr>
+                      <tr>
+                        <th class="align-middle" scope="row">Отдельная страница c трансляцией: </th>
+                        <td class="align-middle"><h1 class="text-primary m-0"><a target="_blank" href="/game/{{game.id}}/live-stream">
+                          http://dquiz.ru/game/{{game.id}}/live-stream </a></h1></td>
+                      </tr>
+                      <tr>
+                        <th colspan="2" class="align-middle"><span class="text-danger">*</span> - для входа требуется секретный код</th>
+
+                      </tr>
+                      </tbody>
+                    </table>
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+

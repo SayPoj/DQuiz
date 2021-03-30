@@ -1,0 +1,56 @@
+<!--
+<div *ngIf="game">
+  <div *ngIf="!game.gameOutcome">
+    <h1 class="card-header text-light text-center">Промежуточные итоги</h1>
+    <div *ngIf="this.gameTeamsSortedByPoints"
+         class=" text-light card-body card bg-dark border-0 border-secondary rounded-0 my-1 p-0">
+
+      <div class="card-body p-0"
+           *ngFor="let gameTeam of this.gameTeamsSortedByPoints; index as gameTeamIndex">
+
+        <div class=" row m-0 p-0 mt-1 mx-1 rounded card-header border-bottom-0">
+          <p class="my-auto rounded-0  col-auto border-right"
+             [ngClass]="{
+                    'text-warning': gameTeamIndex==0,
+                    'text-primary': gameTeamIndex==1,
+                    'text-info': gameTeamIndex==2,
+                    'h5': gameTeamIndex<=2,
+                    'text-muted': gameTeamIndex>2
+                    }">
+            {{gameTeamIndex + 1}}.
+          </p>
+
+          <div class=" col-8">
+            <h3 class="m-0">{{gameTeam.teamName}}</h3>
+            <small class="feedback text-muted">{{gameTeam.teamId}}</small>
+          </div>
+          <p class="my-auto h3 col-3">
+            <span class="text-success">{{gameTeam.points}}</span>
+            /
+            <span class="text-secondary">{{totalPoints}}</span>
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="game.gameOutcome">
+    <h1 class="card-header text-light text-center">Команды победители</h1>
+    <div class="card-body">
+      <div class="row align-items-center m-0 card-deck">
+        <div class="card alert alert-warning p-0" *ngFor="let gameTeamId of Object.keys(game.gameOutcome); index as gameTeamIndex">
+          <h1 class="card-header text-center m-0">
+            <b class="text-primary">{{gameTeamIndex+1}}</b> <span class=" text-muted"> место</span>
+          </h1>
+          <div class="card-body pt-1">
+            <h2 class="text-center mb-1"><u>{{game.gameOutcome[gameTeamId]['teamName']}}</u></h2>
+            <footer class="blockquote-footer text-muted">{{game.gameOutcome[gameTeamId]['teamId']}}</footer>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+-->

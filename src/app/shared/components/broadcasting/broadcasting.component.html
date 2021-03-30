@@ -1,0 +1,10 @@
+<div class="card bg-dark border-0">
+  <div
+    class="card card-img-top bg-dark embed-responsive embed-responsive-16by9 text-center align-items-center border-0">
+    <app-loading-fire *ngIf="status.getValue()!=1"
+                      text="{{loadingText || status.getValue()==0 ? 'Загрузка видео ...' : 'Загрузка плеера ...'}}"
+                      textColor="{{loadingTextColor || 'light'}}"></app-loading-fire>
+    <video #player  (pause)="player.play()" [poster]="poster" (canplay)="player.muted = true;status.next(1)" id="video"  muted autoplay class="embed-responsive-item"></video>
+  </div>
+
+</div>

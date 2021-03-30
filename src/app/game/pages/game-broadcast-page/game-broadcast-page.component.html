@@ -1,0 +1,88 @@
+<div class="w-100 h-100 bg-dark" *ngIf="!game">
+  <app-loading-fire textColor="light" text="Загрузка трансляции ... "></app-loading-fire>
+</div>
+
+
+<div id="gameContainer" class="h-100 w-100 m-0 bg-dark" *ngIf="game">
+  <div #gameNav class="text-center text-light row m-0  navbar navbar-collapse navbar-dark card-header accordion"
+       id="accordionExample">
+    <a class="col-auto navbar-brand p-0 m-0" href="#">
+      <img src="../../../../assets/logo.png" height="40px" class="d-inline-block align-top" alt="">
+    </a>
+    <h1
+      id="navBarGameName"
+      class="col collapse  show text-truncate m-0 "
+      placement="bottom"
+      [ngbTooltip]="'Название игры'"
+      tooltipClass="my-custom-class"
+    >{{game.name}} | Прямая трансляция
+      <span *ngIf="game.state == 4 || game.state == 5" class="text-muted"> | Игра уже закончилась</span>
+    </h1>
+
+    <button id="collapseTwoBtn"
+            class="navbar-toggler col-auto collapse show"
+            data-toggle="collapse"
+            data-target="#navbarNavDropdown,#navBarGameName">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse justify-content-center navbar-collapse text-center" id="navbarNavDropdown">
+      <hr>
+      <h1 class=" col m-0 text-center">
+
+        <span>Прямая трансляция игры </span>
+        <strong>{{game ? game.name : ''}} </strong>
+
+        <span class="text-muted" *ngIf="game.state == 0"> | ИГРА ЕЩЕ НЕ НАЧАЛАСЬ</span>
+        <span class="text-muted" *ngIf="game.state == 2"> | ПЕРЕРЫВ</span>
+        <span class="text-muted" *ngIf="game.state == 4"> | ИГРА ЗАКОНЧИЛАСЬ</span>
+
+
+      </h1>
+    </div>
+  </div>
+
+  <div class="row align-items-center"
+       [ngStyle]="{'height': 'calc(100vh - '+(gameNav.offsetHeight)+'px)'}"
+  >
+
+    <div class="col">
+      <div class="w-100 h-100 mx-auto my-auto p-0"
+           [ngStyle]="{'max-width': 'calc(16 / 9 * (100vh - '+(gameNav.offsetHeight)+'px))'}"
+
+      >
+        <!--         style="box-shadow: 0 80px 60px -60px rgba(21, 21, 21, 0.57), 0 -80px 60px -60px rgba(21, 21, 21, 0.57)"-->
+        <div class="position-relative"
+             style=" padding-bottom: 56.25%;">
+          <div class="position-absolute"
+               style="left: 0; top: 0; right: 0; bottom: 0; ">
+            <div class="card bg-transparent h-100 w-100 p-0 m-0 overflow-hidden" *ngIf="!game.showBroadcast">
+              <img src="{{game.posterUrl}}"
+                   class="card-img"
+                   style=" box-shadow: inset 0 0 20px 10px rgba(0,0,0,0.6);
+                       opacity:0.6;
+                       -moz-opacity:0.6;
+                       -khtml-opacity: 0.6;
+                       background-color:#000;
+                       filter: blur(15px);">
+              <app-loading-fire class="card-img-overlay" text="Ожидание трансляции"
+                                textColor="light"></app-loading-fire>
+            </div>
+            <app-broadcasting *ngIf="game.showBroadcast && game.mediaServer.isWork"
+                              class="bg-transparent border-0 overflow-hidden"
+                              loadingText="Загрузка плеера ..."
+                              [domain]="game.mediaServer.domain"
+                              [subdomain]="game.mediaServer.subdomain"
+                              [port]="game.mediaServer.port"
+                              [poster]="game.posterUrl"
+                              [soundControlPermission]="true"
+                              id="appBroadcasting"
+                              loadingTextColor="light"
+            ></app-broadcasting>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

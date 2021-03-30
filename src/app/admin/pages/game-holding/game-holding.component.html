@@ -1,0 +1,551 @@
+<div class="w-100 h-100 bg-dark" *ngIf="!game">
+  <app-loading-fire textColor="light" text="Загрузка игры ... "></app-loading-fire>
+</div>
+
+<div class="card bg-dark mx-auto" *ngIf="game">
+  <div class="text-center text-light row m-0  navbar navbar-collapse navbar-dark card-header accordion"
+       id="accordionExample">
+    <a class="col-auto navbar-brand p-0 m-0" href="/admin" target="_blank">
+      <img src="../../../../assets/logo.png" height="20px" class="d-inline-block align-top" alt=""> | Admin
+    </a>
+    <h1 class="col text-truncate m-0 ">
+      {{game.name}}
+      <span class="text-muted">| Проведение игры</span>
+    </h1>
+    <button id="collapseTwoBtn"
+            class="navbar-toggler col-auto collapse show"
+            data-toggle="collapse"
+            data-target="#navbarNavDropdown">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse justify-content-center navbar-collapse text-center" id="navbarNavDropdown">
+      <hr>
+      <div class="align-baseline  row justify-content-around m-0">
+        <ng-template #tipContent>
+          <div class="p-1">
+            <div [ngClass]="{'bg-success':game.state == 0,'text-dark':game.state != 0}"
+                 class="border-dark border-bottom p-1 text-left">
+              <b>0</b> - ИГРА НЕ НАЧАЛАСЬ
+            </div>
+            <div [ngClass]="{'bg-success':game.state == 1,'text-dark':game.state != 1}"
+                 class="border-dark border-bottom p-1 text-left">
+              <b>1</b> - ЗАПУСК ИГРЫ
+            </div>
+            <div [ngClass]="{'bg-success':game.state == 2,'text-dark':game.state != 2}"
+                 class="border-dark border-bottom p-1 text-left">
+              <b>2</b> - ПЕРЕРЫВ
+            </div>
+            <div [ngClass]="{'bg-success':game.state == 3,'text-dark':game.state != 3}"
+                 class="border-dark border-bottom p-1 text-left">
+              <b>3</b> - ИГРА ИДЕТ
+            </div>
+            <div [ngClass]="{'bg-success':game.state == 4,'text-dark':game.state != 4}"
+                 class="border-dark border-bottom p-1 text-left">
+              <b>4</b> - ИГРА ЗАКОНЧЕНА
+            </div>
+            <div [ngClass]="{'bg-success':game.state == 5,'text-dark':game.state != 5}"
+                 class="border-dark border-bottom p-1 text-left">
+              <b>5</b> - ИГРА ЗАКРЫТА
+            </div>
+            <hr class="m-2">
+            <div [ngClass]="{'bg-success':game.showBroadcast,'text-dark bg-danger':!game.showBroadcast}"
+                 class="border-dark p-1 text-left">
+              <b *ngIf="game.showBroadcast">Трансляция активна</b>
+              <div class="spinner-grow spinner-grow-sm ml-2 my-auto text-danger  slow" *ngIf="game.showBroadcast"></div>
+              <b *ngIf="!game.showBroadcast">Трансляция не активна</b>
+            </div>
+          </div>
+        </ng-template>
+        <h1 class="m-0 text-center align-middle m-0"> Статус игры: <span
+          class="text-primary"
+          placement="bottom"
+          [ngbTooltip]="tipContent"
+          tooltipClass="my-custom-class"
+        >{{game.state}}</span></h1>
+
+        <div>
+
+          <button *ngIf="game.state==0"
+                  (click)="setState(1)"
+                  class="btn btn-danger"
+          >Открыть игру
+          </button>
+
+          <button
+            *ngIf="game.state!=0 && game.state!=4 && game.state!=5"
+            (click)="setState(4)"
+            class="btn btn-danger"
+          >Завершить игру
+          </button>
+
+          <button *ngIf="game.state==4"
+                  (click)="setState(5)"
+                  class="btn btn-danger"
+          >Закрыть игру
+          </button>
+        </div>
+      </div>
+      <hr>
+      <div class="row justify-content-around">
+        <div class="col-auto">
+          <div ngbDropdown class="d-inline-block ml-1">
+            <button class="btn btn-outline-secondary" id="dropdownBasic1" ngbDropdownToggle>Ссылки для OBS</button>
+            <div ngbDropdownMenu aria-labelledby="dropdownBasic1" class="p-0">
+              <a ngbDropdownItem class="rounded" target="_blank" href="/obs/game-winners/{{game.id}}">Результаты</a>
+              <a ngbDropdownItem class="rounded" target="_blank" href="/obs/teams-list/{{game.id}}">Список команд</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="card-body  row m-0 p-0 h-100"
+       style="min-height: 500px"
+  >
+    <div class="col-lg-6 mh-100 m-0 p-1 pl-2">
+      <div class="text-light bg-dark">
+        <!--Проверочный плеер-->
+        <div id="checkingInputDevicesContainer" *ngIf="!game.showBroadcast" hidden class="card-top">
+          <div class="card-header">
+            <h1 class="m-0">Проверочный плеер</h1>
+          </div>
+
+          <div class="card-img embed-responsive embed-responsive-16by9">
+            <video id="checkingVideoDevicesPlayer" class="embed-responsive-item bg-secondary" #testPlayer
+                   (pause)="testPlayer.play()" [poster]="game.posterUrl" controls muted playsinline autoplay></video>
+          </div>
+
+
+        </div>
+        <!--Плеер прямой трансляции-->
+        <div [ngClass]="{'d-none':!game.showBroadcast}" class="card-top card-header p-0">
+          <div class="card-header ">
+            <div class="row m-0">
+              <h1 class="ml-2 my-0">Прямая трансляция
+                <span class="text-muted" *ngIf="broadcastingComponent && broadcastingComponent.isLocal!=true">(удаленная)</span>
+                <span class="text-muted"
+                      *ngIf="broadcastingComponent && broadcastingComponent.isLocal">(локальная)</span>
+              </h1>
+              <div class="spinner-grow spinner-grow-sm ml-2 my-auto text-danger  slow"></div>
+            </div>
+
+            <!--<small class="ml-2 text-muted">
+              Количество зрителей |
+              <span class="text-info">{{broadcastingComponent.numberOfBroadcastViewers}}</span>
+            </small>-->
+          </div>
+          <app-broadcasting
+            *ngIf="game.mediaServer.isWork"
+            loadingText="Загрузка плеера ..."
+            loadingTextColor="light"
+            [soundControlPermission]="true"
+            [domain]="game.mediaServer.domain"
+            [subdomain]="game.mediaServer.subdomain"
+            [port]="game.mediaServer.port"
+
+          ></app-broadcasting>
+        </div>
+        <!--Плеер прямой трансляции-->
+
+
+        <!--Управление трансляцией-->
+        <div class="card bg-dark">
+          <div class="align-baseline card-header border-0 form-inline row justify-content-around m-0">
+            <h1 class="m-0">Управление трансляцией</h1>
+            <div>
+              <div class="btn-group mr-1 ">
+                <button class="btn btn-outline-primary "
+                        (click)="game.mediaServer.isWork? deleteMediaServer():createMediaServer()"
+                        [disabled]="game.mediaServer.sub_status!=0 && game.mediaServer.sub_status!=9 && game.mediaServer.sub_status!= 14"
+                        [ngClass]="{
+                    'btn-outline-secondary': game.mediaServer.sub_status!=0 && game.mediaServer.sub_status!=9 && game.mediaServer.sub_status!= 14,
+                    'btn-outline-danger': game.mediaServer.isWork
+                    }">
+
+                  <div
+                    *ngIf="game.mediaServer.sub_status!=0 && game.mediaServer.sub_status!=9 && game.mediaServer.sub_status!= 14"
+                    class="spinner-border text-info spinner-border-sm"
+                  ></div>
+
+
+                  <span *ngIf="!(game.mediaServer.sub_status >= 1 && game.mediaServer.sub_status <= 9)">
+                Создать медиасервер
+              </span>
+                  <span *ngIf="game.mediaServer.sub_status==9">
+                  Остановить медиасервер
+              </span>
+
+                  {{(game.mediaServer.sub_status >= 1 && game.mediaServer.sub_status <= 8) ? 'Создание медиасервера' : ''}}
+                  {{(game.mediaServer.sub_status >= 10 && game.mediaServer.sub_status <= 13) ? 'Удаление медиасервера' : ''}}
+                </button>
+                <button class="btn btn-outline-primary"
+                        data-toggle="collapse"
+                        data-target="#mediaServerInfo"
+                        aria-controls="mediaServerInfo"
+                > ?
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--Установка паузы/трансляции-->
+        <div class="card-body p-4">
+          <div class="collapse mb-4" id="mediaServerInfo">
+
+
+            <!--Информация о сервере-->
+            <div class="card bg-dark text-light ">
+              <div class="card-header row m-0 justify-content-around">
+                <h1 class="m-0 text-muted">
+                  Информация о сервере
+                </h1>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                  <button class=" btn btn-primary"
+                          *ngIf="game.mediaServer.sub_status>=2  && game.mediaServer.sub_status!=14 "
+                          (click)="restartMediaServer()"
+                  >Перезагрузить
+                  </button>
+                  <button class=" btn btn-danger"
+                          *ngIf="game.mediaServer.sub_status>=2 && game.mediaServer.sub_status!=14 "
+                          (click)="deleteMediaServer()"
+                  >Удалить
+                  </button>
+                  <button class="btn btn-success" (click)="checkCors()">Проверка</button>
+                </div>
+
+              </div>
+
+              <h3 class="card-body mb-0">
+                <span class="text-muted">Статус:</span>
+                {{ game.mediaServer.sub_status == 0 ? 'Ошибка' : ''}}
+                {{ game.mediaServer.sub_status == 1 ? 'Создание' : ''}}
+                {{ game.mediaServer.sub_status == 2 ? 'Создан' : ''}}
+                {{ game.mediaServer.sub_status == 3 ? 'Включение' : ''}}
+                {{ game.mediaServer.sub_status == 4 ? 'Включен' : ''}}
+                {{ game.mediaServer.sub_status == 5 ? 'Загрузка' : ''}}
+                {{ game.mediaServer.sub_status == 6 ? 'Загружен' : ''}}
+                {{ game.mediaServer.sub_status == 7 ? 'Привязывание к домену' : ''}}
+                {{ game.mediaServer.sub_status == 8 ? 'Привязан к домену' : ''}}
+                {{ game.mediaServer.sub_status == 9 ? 'Работает' : ''}}
+
+
+                {{ game.mediaServer.sub_status == 10 ? 'Удаление сервера' : ''}}
+                {{ game.mediaServer.sub_status == 11 ? 'Удален' : ''}}
+                {{ game.mediaServer.sub_status == 12 ? 'Отвязывание от домена' : ''}}
+                {{ game.mediaServer.sub_status == 13 ? 'Отвязано от домена' : ''}}
+                {{ game.mediaServer.sub_status == 14 ? 'Не создан' : ''}}
+              </h3>
+
+              <pre class="card-body text-light">{{game.mediaServer | json}}</pre>
+
+              <div *ngIf="game.mediaServer.sub_status == 0">
+                <h3 class="m-0">
+                  <span class="text-danger">Ошибка: </span>
+                  <span class="text-muted">{{game.mediaServer.error.code}}</span>
+                </h3>
+
+                <pre>{{game.mediaServer.error.info | json}}</pre>
+              </div>
+            </div>
+            <!--Информация о сервере-->
+
+          </div>
+
+          <div class="custom-control custom-switch" *ngIf="game.state!=0 && game.state!=4 && game.state!=5 ">
+            <!--Показать/скрыть эфир-->
+            <div class="row class justify-content-between">
+              <input id="state2"
+                     type="checkbox"
+                     class="my-auto custom-control-input"
+                     [(ngModel)]="game.showBroadcast"
+                     (change)="changeShowBroadcast()"
+                     [disabled]="!(selectedAudioInput && selectedVideoInput && game.mediaServer.isWork)">
+              <label for="state2" class=" my-auto custom-control-label mr-1"
+              >Показать эфир
+                <span *ngIf="!(!!selectedAudioInput && !!selectedVideoInput)"
+                      class="text-muted mr-1 my-auto"> | выберите
+                  <span *ngIf="!selectedAudioInput"
+                        class="text-danger mr-1">аудиовход</span>
+                  <span *ngIf="!selectedAudioInput && !selectedVideoInput"
+                        class="text-muted mr-1">и</span>
+                  <span *ngIf="!selectedVideoInput"
+                        class="text-danger mr-1">видеовход</span>
+                </span>
+                <span *ngIf="!game.mediaServer.isWork"
+                      class="text-danger mr-1"
+                >
+                  <span class="text-muted">|</span>
+                  запустить медиасервер
+                </span>
+              </label>
+
+
+              <button class="btn btn-outline-danger p-1"
+                      *ngIf="game.showBroadcast"
+                      (click)="game.showBroadcast=false; changeShowBroadcast()">Сбросить эфир
+              </button>
+            </div>
+            <!--Выбор источников-->
+            <div *ngIf="!game.showBroadcast" class="input-group mx-auto m-0">
+              <!--TODO: Сделать кастомный title при наведении на видеоисточник показывать содержимое.
+              Как делать кастомный title см заголовок.
+              -->
+              <select #audioSelect
+                      id="audioSelect"
+                      class="form-control my-2 bg-secondary text-light border-muted selectpicker"
+                      (change)="selectedAudioInput = audioSelect.value; checkingInputDevices()"
+              >
+                <option value="" hidden>Аудиовход</option>
+                <option *ngFor="let mediaDevice of mediaDevicesArray['audioInput']"
+                        value="{{mediaDevice.deviceId}}"
+                        class="border-light">
+                  {{mediaDevice.label}}
+                </option>
+              </select>
+              <select #videoSelect
+                      class="form-control my-2 bg-secondary text-light"
+                      (change)="selectedVideoInput = videoSelect.value; checkingInputDevices()">
+                <option value="" hidden>Видеовход</option>
+                <option *ngFor="let mediaDevice of mediaDevicesArray['videoInput']"
+                        value="{{mediaDevice.deviceId}}"
+                >{{mediaDevice.label}}</option>
+              </select>
+            </div>
+            <!--Установка перерыва-->
+            <div class="row">
+              <input id="state3"
+                     type="checkbox"
+                     [checked]="game.state == 2"
+                     (change)="setState(2); changeStepSection(-1)"
+
+                     class="custom-control-input">
+              <label for="state3" class="custom-control-label">Перерыв</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 mh-100 m-0 p-1 pr-2">
+
+      <div class="w-100 text-light h-100 card rounded-0 bg-transparent" *ngIf="game.state!=5">
+        <div class="card bg-dark">
+          <div class="card-header border-0 row m-0 justify-content-around">
+            <h1 class="m-0"> Общий чат</h1>
+            <div class="custom-control custom-switch align-middle m-0">
+              <input id="showСhat"
+                     type="checkbox"
+                     [checked]="game.showChat"
+                     class="custom-control-input my-auto"
+                     (change)="firebaseService.updateGame({showChat: !game.showChat}, game.id)">
+              <label for="showСhat"
+                     class="custom-control-label my-auto">
+                <span *ngIf="game.showChat">Включен</span>
+                <span *ngIf="!game.showChat">Выключен</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class=" card-body p-0 ">
+          <app-chat
+            style="min-height: 500px"
+            *ngIf="game.showChat && game.state!=0"
+            id="chat"
+            class="m-0 p-0"
+            [roomId]="game.id"
+            [teamName]="'DQuiz'"
+            [userName]="'Admin'"></app-chat>
+
+        </div>
+        <div class=" card-footer pl-2 p-1 pr-0"
+             *ngIf=" game.showChat && game.state!=0">
+          <div id="chatInputGroup"
+               #chatInputGroup
+               class="input-group bg-dark border-0 card-footer px-2 pt-2 pb-1 ">
+            <input type="text"
+                   class="form-control bg-dark text-light border-secondary"
+                   placeholder="Напишите сообщение ..."
+                   id="chatInput"
+                   (keyup.enter)="sendButton.click() "
+                   [ngClass]="{'is-valid': chatInput.value.trim()!='' }"
+                   #chatInput>
+            <div class="input-group-append">
+              <button class="align-middle btn btn-outline-secondary"
+                      type="button"
+                      #sendButton
+                      id="sendButton"
+                      [ngClass]="{'btn-outline-success': chatInput.value.trim()!='' }"
+                      (mouseover)="sendButtonText.hidden = false"
+                      (mouseout)="sendButtonText.hidden = true"
+                      (click)="chatComponent.sendMessage(chatInput.value.trim());chatInput.value='';chatInput.focus()">
+        <span class="my-auto">
+            <svg class="bi bi-arrow-up-circle" width="1.3em" height="1.3em" viewBox="0 0 16 16" fill="currentColor"
+                 xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+              <path fill-rule="evenodd"
+                    d="M4.646 8.354a.5.5 0 0 0 .708 0L8 5.707l2.646 2.647a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 0 0 0 .708z"/>
+              <path fill-rule="evenodd" d="M8 11.5a.5.5 0 0 0 .5-.5V6a.5.5 0 0 0-1 0v5a.5.5 0 0 0 .5.5z"/>
+            </svg>
+          </span>
+                <span #sendButtonText hidden class="ml-2">Отправить</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!--Управление активным вопросов-->
+  <div class="mx-2 card bg-transparent" *ngIf="game.state!=0 && game.state!=4 && game.state!=5">
+    <div class="card-header row m-0 text-light justify-content-around border-0">
+      <h1 class="m-0">Выбор активного раздела</h1>
+    </div>
+  </div>
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+
+  <div class="card-body text-light pt-2">
+
+
+    <div *ngIf="game.state!=0 && game.state!=4 && game.state!=5">
+
+      <div (click)="changeStepSection(null)" class="form-check">
+        <input class="form-check-input" [checked]="game.step.section == null" type="checkbox">
+        <label class="form-check-label">Отключить форму ответов</label>
+      </div>
+
+      <div *ngFor="let section of game.answers; let secIndex = index"
+           [ngClass]="{'card-header border border-secondary rounded p-0 pl-1': secIndex == game.step.section}">
+        <div (click)="changeStepSection(secIndex)" class="form-check">
+          <input class="form-check-input" [checked]="game.step.section == secIndex && game.step.section!= null"
+                 type="checkbox">
+          <label class="form-check-label">{{section.name}}</label>
+        </div>
+
+        <div class="pl-3" *ngIf="game.step.section == secIndex">
+          <div *ngFor="let question of game.answers[game.step.section].questions; let quesIndex = index">
+            <div (click)="changeStepQuestion(quesIndex)" class="form-check">
+              <input class="form-check-input" [checked]="game.step.question >= quesIndex && game.step.question!= null"
+                     type="checkbox">
+              <label class="form-check-label">{{question.name}}</label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+  <!---->
+
+
+  <!--проверка ответов-->
+  <div class="mx-2 card bg-transparent">
+    <div class="card-header row m-0 text-light justify-content-around border-0">
+      <h1 class="m-0">Проверка ответа</h1>
+    </div>
+  </div>
+  <div class="card-body text-light pt-2">
+    <div style="overflow: auto;">
+      <table class="table-dark text-center table table-bordered table-striped">
+        <thead>
+        <tr>
+          <th style="background-color: gray; position: sticky; left: -2px"></th>
+          <th style="background-color: gray; position: sticky; left: -2px"></th>
+          <th [colSpan]="section.questions.length" class="text-truncate text-muted"
+              *ngFor="let section of game.answers">
+            {{section.name}}
+          </th>
+        </tr>
+        <tr class="position-static">
+          <th class="text-truncate  bg-dark text-left" style="position: sticky; left: -2px">
+            Σ
+          </th>
+          <th class="text-truncate  bg-dark"
+              style="position: sticky; left: -2px"
+          >Команды \ Вопросы</th>
+          <th class="text-truncate" style="max-width: 150px" *ngFor="let question of questions">
+            {{question.question.name}}
+          </th>
+        </tr>
+        </thead>
+        <tbody *ngFor="let team of game.teams">
+
+        <tr>
+          <th class="text-truncate  bg-dark text-left" style="position: sticky; left: -2px">{{team.totalPoints}}</th>
+          <th class="text-truncate  bg-dark text-left"
+              style="position: sticky; left: -2px">
+            {{team.name}}
+          </th>
+
+
+
+          <td class="justify-content-between text-truncate" style="max-width: 150px" *ngFor="let question of questions">
+            <div *ngIf="getTeamAnswer(team.id, question.section.id, question.question.id)">
+              <span *ngIf="question.question.type == 'text'"
+                    [ngClass]="{
+                    'text-success': getTeamAnswer(team.id, question.section.id, question.question.id).points>0,
+                    'text-danger': getTeamAnswer(team.id, question.section.id, question.question.id).points<=0
+                    }"> {{getTeamAnswer(team.id, question.section.id, question.question.id).answer}} </span>
+              <span *ngIf="question.question.type == 'radio'"
+                    [ngClass]="{
+                    'text-success': getTeamAnswer(team.id, question.section.id, question.question.id).points>0,
+                    'text-danger': getTeamAnswer(team.id, question.section.id, question.question.id).points<=0
+                    }"> {{ getRadioAnswer( question.section.id, question.question.id, getTeamAnswer(team.id, question.section.id, question.question.id).answer)}}
+              </span>
+              <span *ngIf="question.question.type == 'text'">
+              <button *ngIf="getTeamAnswer(team.id, question.section.id, question.question.id).points<=0"
+                      (click)="addRightAnswer(question.section.id, question.question.id, getTeamAnswer(team.id,question.section.id, question.question.id).answer)"
+                      class="btn btn-outline-secondary border-0 p-0">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-plus" fill="currentColor"
+                     xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd"
+                        d="M4 0h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H4z"/>
+                  <path fill-rule="evenodd"
+                        d="M8 5.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V10a.5.5 0 0 1-1 0V8.5H6a.5.5 0 0 1 0-1h1.5V6a.5.5 0 0 1 .5-.5z"/>
+                </svg>
+              </button>
+              <button *ngIf="getTeamAnswer(team.id,question.section.id, question.question.id).points>0"
+                      (click)="delRightAnswer(question.section.id, question.question.id, getTeamAnswer(team.id,question.section.id, question.question.id).answer)"
+                      class="btn btn-outline-secondary border-0 p-0">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-minus" fill="currentColor"
+                     xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd"
+                        d="M4 0h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H4z"/>
+                  <path fill-rule="evenodd" d="M5.5 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5z"/>
+                </svg>
+              </button>
+            </span>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+

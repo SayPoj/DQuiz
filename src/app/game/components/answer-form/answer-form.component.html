@@ -1,0 +1,60 @@
+<div class="w-100 h-100 card rounded-0 border-0 bg-dark overflow-auto" id="form">
+  <div id="formContainer" class="w-100 card-body p-0  overflow-auto">
+
+    <div *ngIf="_formSubmitted" class="alert alert-success alert-dismissible fade show" role="alert">
+      <strong>Форма отправлена!</strong> Вы можете изменить ответы и отправить ее повторно.
+      <button type="button" class="close" (click)="_formSubmitted=false">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <app-loading-fire
+      textColor="light"
+      text="форма ответов отключена"
+      *ngIf="step.section == null"
+    ></app-loading-fire>
+    <div *ngFor="let section of answers, let secInd = index">
+      <div class="card my-2" *ngIf="step.section == secInd">
+        <h1 class="card-header"> {{section.name}} </h1>
+        <div class="card-body pb-2" *ngIf="section.questions.length">
+          <div *ngFor="let question of section.questions; let quInd = index">
+            <div *ngIf="step.question!=null && step.question>=quInd">
+              <div *ngIf="question.type=='text'" class="mb-2">
+                <label [htmlFor]="questionInput">{{question.name}}</label>
+                <div class="input-group">
+                  <input type="text"
+                         #questionInput
+                         (blur)="addAnswer(section.id, question.id, questionInput.value)"
+                         class="form-control"
+                         [value]="getNgModel(section.id, question.id)"
+                         placeholder="Введите ответ">
+                </div>
+              </div>
+              <div *ngIf="question.type=='radio'" class="mb-2">
+                <label>{{question.name}}</label>
+                <div *ngFor="let option of question.answerOptions; let opInd = index"
+                     (click)="addAnswer(section.id, question.id, ''+opInd)"
+                     class="form-check">
+                  <input class="form-check-input"
+                         [checked]="getNgModel(section.id, question.id) == ''+opInd"
+                         type="radio"
+                         [value]="opInd">
+                  <label class="form-check-label"> {{option.name}} </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--<pre class="text-light">{{team | json}}</pre>-->
+    <button *ngIf="step.section!=null && step.question!=null"
+            class="btn btn-outline-success btn-block"
+            (click)="formSubmitted()"
+    >Отправить форму
+    </button>
+
+  </div>
+
+</div>
+

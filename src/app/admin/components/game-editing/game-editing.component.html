@@ -1,0 +1,504 @@
+<div class="p-2 bg-dark" id="gameCreateContainer" *ngIf="game">
+
+  <div class="card mx-auto"
+       style="max-width: 1076px">
+
+    <!--Информация об игре-->
+    <div class="card-header row m-0 justify-content-between">
+      <h1 class="m-0">Описание игры</h1>
+      <button class="btn btn-outline-primary" (click)="saveGame()">Сохранить</button>
+    </div>
+    <div class="card-body">
+      <!--Название и дата и время-->
+      <div class="form-row m-0">
+        <!--Название игры-->
+        <div class="form-group col-lg">
+          <label for="name">Название игры</label>
+          <input id="name" type="text"
+                 class="form-control"
+                 [ngClass]="{ 'is-invalid': !game.name }"
+                 [(ngModel)]="game.name"
+                 placeholder="Название игры">
+          <div
+            *ngIf="!game"
+            class="invalid-feedback">
+            Пожалуйста,укажите название игры.
+          </div>
+        </div>
+        <!--Дата и время-->
+        <div class="form-group col-lg">
+          <label for="dateTime">Дата и время</label>
+          <input id="dateTime"
+                 class="form-control"
+                 type="datetime-local"
+                 [(ngModel)]="game.dateTime"
+                 [ngClass]="{
+                       'is-invalid': !game.dateTime
+                       }">
+          <div
+            *ngIf="!game.dateTime"
+            class="invalid-feedback">
+            Пожалуйста, укажите дату и время игры.
+          </div>
+        </div>
+      </div>
+      <!--Краткое описание-->
+      <div class="form-group">
+        <label for="shortDescription">Краткое описание</label>
+        <input id="shortDescription"
+               type="text"
+               class="form-control"
+               placeholder="Краткое описание"
+               [(ngModel)]="game.shortDescription"
+               [ngClass]="{
+                       'is-invalid': !game.shortDescription
+                       }">
+        <div
+          *ngIf="!game.shortDescription"
+          class="invalid-feedback">
+          Пожалуйста, добавьте краткое описание игры.
+        </div>
+      </div>
+      <!--Тэги игры-->
+      <div class="form-group">
+        <label for="gameTheme">Тэги игры</label>
+
+        <mat-chip-list #chipList>
+          <mat-chip *ngFor="let tag of game.tags" [selectable]="true"
+                    [removable]="true" (removed)="removeGameTag(tag)">
+            {{tag.name}}
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-x" fill="currentColor" xmlns="http://www.w3.org/2000/svg" matChipRemove>
+              <path fill-rule="evenodd" d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+            </svg>
+          </mat-chip>
+
+          <input placeholder="Добавить тэг"
+                 [ngClass]="{ 'is-invalid': !game.tags }"
+                 id="gameTheme"
+                 class="form-control"
+                 [matChipInputFor]="chipList"
+                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                 [matChipInputAddOnBlur]="true"
+                 (matChipInputTokenEnd)="addGameTag($event)">
+          <div *ngIf="!game.tags"
+               class="invalid-feedback"
+          >Пожалуйста, добавьте краткое описание игры.
+          </div>
+        </mat-chip-list>
+
+
+      </div>
+      <!--ПОлное описание-->
+      <div class="form-group">
+        <label for="fullDescription">Полное описание</label>
+        <angular-editor
+          [ngClass]="{'card bg-transparent border-danger':!game.fullDescription}"
+          id="fullDescription"
+          [(ngModel)]="game.fullDescription"
+          [config]="fullDescriptionEditorConfig"
+        ></angular-editor>
+        <small
+          *ngIf="!game.fullDescription"
+          class="text-danger">
+          Пожалуйста, добавьте развернутое описание игры.
+        </small>
+      </div>
+      <!--Загрузка постера-->
+      <div class="form-group">
+        <div>
+          <label for="poster">Постер игры</label>
+          <div class="div">
+            <progress max="100" [value]="(posterUploadProgress | async)" *ngIf="posterUploadProgress"></progress>
+          </div>
+        </div>
+        <div class="input-group custom-file">
+          <input
+            type="file"
+            accept=".png, .jpg"
+            class="custom-file-input form-control"
+            id="poster"
+            (change)="uploadPoster($event)"
+            [ngClass]="{ 'is-invalid': !game.posterUrl }"
+          >
+          <label
+            class="custom-file-label text-muted"
+            for="poster"
+          >Выберите файл постера игры</label>
+          <label
+            class="custom-file-label text-success"
+            for="poster"
+            *ngIf="game.posterUrl"
+          >Постер выбран</label>
+          <div
+            *ngIf="!game.posterUrl"
+            class="invalid-feedback">
+            Пожалуйста, добавьте постер игры.
+          </div>
+        </div>
+
+        <div class="card mx-auto bg-dark my-2 w-25 embed-responsive-16by9" *ngIf="game.posterUrl">
+          <img id="imgResult" class="card-img-top embed-responsive-item" [src]="game.posterUrl">
+        </div>
+      </div>
+    </div>
+
+    <!--Форма ответов-->
+    <div class="card-header border-top row m-0 justify-content-between">
+      <h1 class="m-0">Форма ответов</h1>
+    </div>
+    <mat-tab-group mat-align-tabs="center" class="card-body">
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <h3 class="mb-0">Создание</h3>
+        </ng-template>
+        <div class="mt-2">
+          <div class="card my-2" *ngFor="let section of game.answers, let secInd = index">
+            <div class="card-header input-group">
+              <div class="input-group-prepend"><span class="input-group-text">Блок №{{secInd + 1}}</span></div>
+              <input type="text"
+                     [(ngModel)]="section.name"
+                     class="form-control"
+                     placeholder="Название блока"
+                     [ngClass]="{'is-invalid': !section.name}">
+              <div class="input-group-append">
+                <button type="button"
+                        class="input-group-text btn-danger"
+                        (click)="remove(game.answers, secInd)">
+                  <svg class="bi bi-trash" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+                       xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M5.5 5.5A.5.5 0 016 6v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm2.5 0a.5.5 0 01.5.5v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm3 .5a.5.5 0 00-1 0v6a.5.5 0 001 0V6z"/>
+                    <path fill-rule="evenodd"
+                          d="M14.5 3a1 1 0 01-1 1H13v9a2 2 0 01-2 2H5a2 2 0 01-2-2V4h-.5a1 1 0 01-1-1V2a1 1 0 011-1H6a1 1 0 011-1h2a1 1 0 011 1h3.5a1 1 0 011 1v1zM4.118 4L4 4.059V13a1 1 0 001 1h6a1 1 0 001-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
+                          clip-rule="evenodd"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="card-body pb-2" *ngIf="section.questions.length">
+              <div *ngFor="let question of section.questions; let quInd = index">
+                <div *ngIf="question.type=='text'" class="input-group mb-2">
+                  <div class="input-group-prepend"><span class="input-group-text">Вопрос № {{quInd + 1}}</span></div>
+                  <input type="text"
+                         [(ngModel)]="question.name"
+                         class="form-control"
+                         placeholder="Введите вопрос">
+                  <div class="input-group-append"><span class="input-group-text">Текстовый вопрос</span></div>
+                  <div class="input-group-append">
+                    <button type="button"
+                            class="input-group-text btn-danger"
+                            (click)="remove(section.questions, quInd)">
+                      <svg class="bi bi-trash" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+                           xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M5.5 5.5A.5.5 0 016 6v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm2.5 0a.5.5 0 01.5.5v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm3 .5a.5.5 0 00-1 0v6a.5.5 0 001 0V6z"/>
+                        <path fill-rule="evenodd"
+                              d="M14.5 3a1 1 0 01-1 1H13v9a2 2 0 01-2 2H5a2 2 0 01-2-2V4h-.5a1 1 0 01-1-1V2a1 1 0 011-1H6a1 1 0 011-1h2a1 1 0 011 1h3.5a1 1 0 011 1v1zM4.118 4L4 4.059V13a1 1 0 001 1h6a1 1 0 001-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
+                              clip-rule="evenodd"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div *ngIf="question.type=='radio'" class="card p-0 mb-2">
+                  <div class="input-group card-header p-0 border-0">
+                    <div class="input-group-prepend"><span class="input-group-text">Вопрос № {{quInd + 1}}</span></div>
+                    <input type="text"
+                           [(ngModel)]="question.name"
+                           class="form-control"
+                           placeholder="Введите вопрос">
+                    <div class="input-group-append"><span class="input-group-text">Выор ответа</span></div>
+                    <div class="input-group-append">
+                      <button type="button"
+                              class="input-group-text btn-danger"
+                              (click)="remove(section.questions, quInd)">
+                        <svg class="bi bi-trash" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+                             xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M5.5 5.5A.5.5 0 016 6v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm2.5 0a.5.5 0 01.5.5v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm3 .5a.5.5 0 00-1 0v6a.5.5 0 001 0V6z"/>
+                          <path fill-rule="evenodd"
+                                d="M14.5 3a1 1 0 01-1 1H13v9a2 2 0 01-2 2H5a2 2 0 01-2-2V4h-.5a1 1 0 01-1-1V2a1 1 0 011-1H6a1 1 0 011-1h2a1 1 0 011 1h3.5a1 1 0 011 1v1zM4.118 4L4 4.059V13a1 1 0 001 1h6a1 1 0 001-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
+                                clip-rule="evenodd"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div *ngIf="question.answerOptions.length" class="card-body pt-2 pb-0">
+                    <div *ngFor="let option of question.answerOptions; let opInd = index" class="input-group mb-2">
+                      <div class="input-group-prepend"><span class="input-group-text">Вариант {{opInd + 1}}</span></div>
+                      <input type="text"
+                             [(ngModel)]="option.name"
+                             class="form-control"
+                             placeholder="Введите вопрос">
+                      <div class="input-group-append">
+                        <button type="button"
+                                class="input-group-text btn-danger"
+                                (click)="remove(question.answerOptions, opInd)">
+                          <svg class="bi bi-trash" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+                               xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M5.5 5.5A.5.5 0 016 6v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm2.5 0a.5.5 0 01.5.5v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm3 .5a.5.5 0 00-1 0v6a.5.5 0 001 0V6z"/>
+                            <path fill-rule="evenodd"
+                                  d="M14.5 3a1 1 0 01-1 1H13v9a2 2 0 01-2 2H5a2 2 0 01-2-2V4h-.5a1 1 0 01-1-1V2a1 1 0 011-1H6a1 1 0 011-1h2a1 1 0 011 1h3.5a1 1 0 011 1v1zM4.118 4L4 4.059V13a1 1 0 001 1h6a1 1 0 001-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
+                                  clip-rule="evenodd"/>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <!--Форма добавить вариант ответа-->
+                  <div class="input-group border-0 card-footer ">
+                    <input #newRadioAnswerOption
+                           type="text"
+                           class="form-control"
+                           placeholder="Добавить вариант">
+                    <div class="input-group-append">
+                      <button
+                        (click)="addRadioAnswerOption(newRadioAnswerOption.value.trim(), question); newRadioAnswerOption.value=''"
+                        class="btn btn-outline-primary">Добавить вариант
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--Форма добавить вопрос-->
+            <div class=" card-footer input-group">
+              <input #newQuestionName
+                     type="text"
+                     class="form-control"
+                     placeholder="Добавить вопрос">
+              <div class="input-group-append">
+                <select class="custom-select" #newQuestionType>
+                  <option value="" selected>Тип вопроса</option>
+                  <option value="text">Текстовый</option>
+                  <option value="radio">Выбор ответа</option>
+                </select>
+              </div>
+              <div *ngIf="newQuestionName.value.trim() && newQuestionType.value.trim()"
+                   class="input-group-append">
+                <button
+                  (click)="addQuestion(newQuestionName.value.trim(), newQuestionType.value.trim(), section); newQuestionType.value='';newQuestionName.value=''"
+                  class="btn btn-outline-primary">Добавить вопрос
+                </button>
+              </div>
+            </div>
+          </div>
+          <!--Форма добавить раздел-->
+          <div class="input-group">
+            <input #addNewSection
+                   type="text"
+                   class="form-control"
+                   placeholder="Введите название блока">
+            <div class="input-group-append">
+              <button (click)="addSection(addNewSection.value)" class="btn btn-outline-primary">Добавить раздел</button>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <h3 class="mb-0">Просмотр</h3>
+        </ng-template>
+
+
+        <div class="card my-2" *ngFor="let section of game.answers, let secInd = index">
+          <h1 class="card-header"> {{section.name}} </h1>
+
+          <div class="card-body pb-2" *ngIf="section.questions.length">
+            <div *ngFor="let question of section.questions; let quInd = index">
+              <div *ngIf="question.type=='text'" class="mb-2">
+                <label [htmlFor]="questionInput">Вопрос № {{quInd + 1}} | {{question.name}}</label>
+                <div class="input-group">
+                  <input type="text"
+                         #questionInput
+                         class="form-control"
+                         placeholder="Введите ответ">
+                </div>
+              </div>
+              <div *ngIf="question.type=='radio'" class="mb-2">
+                <label>Вопрос № {{quInd + 1}} | {{question.name}}</label>
+                <div *ngFor="let option of question.answerOptions; let opInd = index" class="form-check">
+                  <input class="form-check-input"
+                         #radioInput
+                         [id]="radioInput"
+                         type="radio"
+                         [value]="opInd">
+                  <label class="form-check-label" [htmlFor]="radioInput"> {{option.name}} </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <h3 class="mb-0">Ответы и баллы</h3>
+        </ng-template>
+        <div class="mt-2">
+          <div class="card my-2" *ngFor="let section of game.answers, let secInd = index">
+            <div class="card-header input-group">
+              <div class="input-group-prepend"><span class="input-group-text">Блок №{{secInd + 1}}</span></div>
+              <input type="text"
+                     [(ngModel)]="section.name"
+                     class="form-control"
+                     placeholder="Название блока"
+                     [ngClass]="{'is-invalid': !section.name}">
+              <div class="input-group-append">
+                <button type="button"
+                        class="input-group-text btn-danger"
+                        (click)="remove(game.answers, secInd)">
+                  <svg class="bi bi-trash" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+                       xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M5.5 5.5A.5.5 0 016 6v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm2.5 0a.5.5 0 01.5.5v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm3 .5a.5.5 0 00-1 0v6a.5.5 0 001 0V6z"/>
+                    <path fill-rule="evenodd"
+                          d="M14.5 3a1 1 0 01-1 1H13v9a2 2 0 01-2 2H5a2 2 0 01-2-2V4h-.5a1 1 0 01-1-1V2a1 1 0 011-1H6a1 1 0 011-1h2a1 1 0 011 1h3.5a1 1 0 011 1v1zM4.118 4L4 4.059V13a1 1 0 001 1h6a1 1 0 001-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
+                          clip-rule="evenodd"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="card-body pb-2" *ngIf="section.questions.length">
+              <div *ngFor="let question of section.questions; let quInd = index" class="mb-2">
+                <div *ngIf="question.type=='text'" class="card ">
+                  <div class="card-header input-group">
+
+                    <div class="input-group-prepend"><span class="input-group-text">Вопрос № {{quInd + 1}}</span></div>
+                    <input type="text"
+                           [(ngModel)]="question.name"
+                           class="form-control"
+                           placeholder="Введите вопрос">
+                    <div class="input-group-append"><span class="input-group-text">Текстовый вопрос</span></div>
+                    <div class="input-group-append">
+                      <button type="button"
+                              class="input-group-text btn-danger"
+                              (click)="remove(section.questions, quInd)">
+                        <svg class="bi bi-trash" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+                             xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M5.5 5.5A.5.5 0 016 6v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm2.5 0a.5.5 0 01.5.5v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm3 .5a.5.5 0 00-1 0v6a.5.5 0 001 0V6z"/>
+                          <path fill-rule="evenodd"
+                                d="M14.5 3a1 1 0 01-1 1H13v9a2 2 0 01-2 2H5a2 2 0 01-2-2V4h-.5a1 1 0 01-1-1V2a1 1 0 011-1H6a1 1 0 011-1h2a1 1 0 011 1h3.5a1 1 0 011 1v1zM4.118 4L4 4.059V13a1 1 0 001 1h6a1 1 0 001-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
+                                clip-rule="evenodd"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+
+                  <div class="card-header input-group">
+
+                    <div class="input-group-prepend"><span class="input-group-text">Баллы за правильный</span></div>
+                    <input class="form-control"
+                           type="number"
+                           [(ngModel)]="question.correctAnswer"
+                           min="0">
+                    <div class="input-group-prepend"><span class="input-group-text">Баллы за неправильный</span></div>
+                    <input class="form-control"
+                           [(ngModel)]="question.wrongAnswer"
+                           type="number"
+                           max="0"
+                    >
+                  </div>
+
+
+
+                  <!--Форма добавить правильный ответ-->
+                  <mat-chip-list class="card-body" #TextAnswerList>
+                    <mat-chip *ngFor="let rightAnswer of question.rightAnswers; let rightAnsInd = index"
+                              [selectable]="true"
+                              [removable]="true"
+                              (removed)="remove(question.rightAnswers, rightAnsInd)">
+                      {{rightAnswer.name}}
+
+                      <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-x" fill="currentColor" xmlns="http://www.w3.org/2000/svg" matChipRemove>
+                        <path fill-rule="evenodd" d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                      </svg>
+                    </mat-chip>
+                    <input placeholder="Добавить правильный ответ"
+                           class="form-control"
+                           #TextAnswerListInput
+                           [matChipInputFor]="TextAnswerList"
+                           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                           [matChipInputAddOnBlur]="true"
+                           (matChipInputTokenEnd)="push(question.rightAnswers, {name: TextAnswerListInput.value}); TextAnswerListInput.value=''">
+                  </mat-chip-list>
+                </div>
+
+                <div *ngIf="question.type=='radio'" class="card  p-0">
+                  <div class="input-group card-header p-0 border-0">
+                    <div class="input-group-prepend"><span class="input-group-text">Вопрос № {{quInd + 1}}</span></div>
+                    <input type="text"
+                           [(ngModel)]="question.name"
+                           class="form-control"
+                           placeholder="Введите вопрос">
+                    <div class="input-group-append"><span class="input-group-text">Выбор ответа</span></div>
+                    <div class="input-group-append">
+                      <button type="button"
+                              class="input-group-text btn-danger"
+                              (click)="remove(section.questions, quInd)">
+                        <svg class="bi bi-trash" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+                             xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M5.5 5.5A.5.5 0 016 6v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm2.5 0a.5.5 0 01.5.5v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm3 .5a.5.5 0 00-1 0v6a.5.5 0 001 0V6z"/>
+                          <path fill-rule="evenodd"
+                                d="M14.5 3a1 1 0 01-1 1H13v9a2 2 0 01-2 2H5a2 2 0 01-2-2V4h-.5a1 1 0 01-1-1V2a1 1 0 011-1H6a1 1 0 011-1h2a1 1 0 011 1h3.5a1 1 0 011 1v1zM4.118 4L4 4.059V13a1 1 0 001 1h6a1 1 0 001-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
+                                clip-rule="evenodd"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="card-header input-group">
+
+                    <div class="input-group-prepend"><span class="input-group-text">Баллы за правильный</span></div>
+                    <input class="form-control"
+                           type="number"
+                           [(ngModel)]="question.correctAnswer"
+                           min="0">
+                    <div class="input-group-prepend"><span class="input-group-text">Баллы за неправильный</span></div>
+                    <input class="form-control"
+                           [(ngModel)]="question.wrongAnswer"
+                           type="number"
+                           max="0"
+                    >
+                  </div>
+                  <div *ngIf="question.answerOptions.length" class="card-body pt-2 pb-0">
+                    <div *ngFor="let option of question.answerOptions; let opInd = index" class="input-group mb-2">
+                      <div class="input-group-prepend">
+                        <div class="input-group-text">
+                          <input [(ngModel)]="question.rightAnswer" (click)="question.rightAnswer = opInd; saveGame()"
+                                 [value]="opInd" type="radio">
+                        </div>
+                      </div>
+                      <div class="input-group-prepend"><span class="input-group-text">Вариант {{opInd + 1}}</span></div>
+                      <input type="text"
+                             [(ngModel)]="option.name"
+                             class="form-control"
+                             placeholder="Введите вопрос">
+                      <div class="input-group-append">
+                        <button type="button"
+                                class="input-group-text btn-danger"
+                                (click)="remove(question.answerOptions, opInd)">
+                          <svg class="bi bi-trash" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+                               xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M5.5 5.5A.5.5 0 016 6v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm2.5 0a.5.5 0 01.5.5v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm3 .5a.5.5 0 00-1 0v6a.5.5 0 001 0V6z"/>
+                            <path fill-rule="evenodd"
+                                  d="M14.5 3a1 1 0 01-1 1H13v9a2 2 0 01-2 2H5a2 2 0 01-2-2V4h-.5a1 1 0 01-1-1V2a1 1 0 011-1H6a1 1 0 011-1h2a1 1 0 011 1h3.5a1 1 0 011 1v1zM4.118 4L4 4.059V13a1 1 0 001 1h6a1 1 0 001-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
+                                  clip-rule="evenodd"/>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

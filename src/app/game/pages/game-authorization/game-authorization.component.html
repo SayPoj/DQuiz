@@ -1,0 +1,212 @@
+<div class="w-100 h-100 bg-dark" *ngIf="!game && !team">
+  <app-loading-fire textColor="light" text="Загрузка игры ... "></app-loading-fire>
+</div>
+
+<div class="w-100 h-100 overflow-auto"
+     *ngIf="game && team "
+     [ngStyle]="{'background':game?'fixed #000 center repeat-x url('+game.posterUrl+')':''}">
+  <div class=" min-vh-100 row align-items-center m-0 " style="-webkit-backdrop-filter:  opacity(60%) blur(15px);backdrop-filter: opacity(60%) blur(15px)">
+    <div class="card col  bg-dark text-light text-center mx-auto p-0"
+         style="max-width: 1076px;box-shadow: 0 80px 60px -60px rgba(21, 21, 21, 0.57), 0 -80px 60px -60px rgba(21, 21, 21, 0.57)">
+
+
+
+      <div class="text-center text-light row m-0  navbar navbar-collapse navbar-dark card-header accordion" id="accordionExample">
+        <a class="col-auto navbar-brand p-0 m-0" href="#">
+          <img src="../../../../assets/logo.png" height="40px" class="d-inline-block align-top" alt="">
+        </a>
+        <h1  id="navBarGameName"
+             class="col collapse  show text-truncate m-0 "
+        >{{game.name}}
+          <span *ngIf="game.state == 4 || game.state == 5" class="text-muted"> | Игра уже закончилась</span>
+        </h1>
+        <button id="collapseTwoBtn"
+                class="navbar-toggler col-auto collapse show"
+                data-toggle="collapse"
+                data-target="#navbarNavDropdown,#navBarGameName">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse justify-content-center navbar-collapse text-center" id="navbarNavDropdown">
+          <hr>
+          <h1 class=" col m-0 text-center">
+            <span class="text-muted">Авторизация на игру </span>
+            <strong>{{game ? game.name : ''}} </strong>
+            <span class="text-muted">в команду </span>
+            <span><strong>{{team ? team.name : ''}}</strong></span>
+          </h1>
+        </div>
+      </div>
+
+
+
+
+      <div *ngIf="detectRTC.isWebRTCSupported && detectRTC.isWebSocketsSupported && !detectRTC.isWebSocketsBlocked && !secretVerified">
+        <div class="card-body">
+          <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            Проверьте свое оборудование перед игрой <a
+            href="/equipment-check"
+            target="_blank"
+          ><strong><u>на странице технических требований.</u></strong></a>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+
+          <label for="secretInputGroup" class="text-left">Секретный код команды:</label>
+          <div id="secretInputGroup" class=" input-group mb-2 justify-content-center">
+
+            <div class="input-group-prepend"
+                 style=" width: 15em"
+                 id="secretInputContainer">
+              <input class="form-control input-group-text mt-1  text-left display-4 rounded"
+                     style="letter-spacing: 0.7em; font-size: 1.5rem;"
+                     maxlength="6"
+                     placeholder="______"
+                     id="secretInput"
+                     #secretInput
+                     (keyup)="secretInputValidation()"
+                     (keydown)="secretInputValidation()"
+                     (keypress)="secretInputValidation()"
+                     (change)="secretInputValidation()"
+                     (paste)="secretInputValidation()"
+              >
+
+            </div>
+
+            <div class="input-group-append">
+              <button
+                class="btn btn-outline-secondary rounded mt-1 ml-2"
+                [ngClass]="{'btn-outline-success': secretInput.value.length==6}"
+                type="button"
+                #verifyButton
+                id="verifyButton"
+                (click)="secretVerification()"
+                [disabled]="secretInput.value.length<6"
+              > Проверить </button>
+            </div>
+
+          </div>
+
+          <!--Админская вход-->
+          <div *ngIf="isDevMode" class="alert alert-warning alert-dismissible fade show" role="alert">
+            <div class="row p-0 m-0 text-center justify-content-center ">
+              <button class="btn btn-primary mx-2"
+                      (click)="secretInput.value=teamSecret;secretVerification()">
+                Секрет: <u>{{teamSecret}}</u>
+              </button>
+              <a
+                (click)="gameAuthService.logIn({name: '1', isCaptain: true, secretVerified: true, secret: teamSecret,
+      game: {id: this.game.id, name:this.game.name},
+      team: {id: this.team.id, name:this.team.name},
+      type: 'game-layout'})"
+                href="game/{{game.id}}/{{team.id}}" target="_self"
+                class="btn  btn-danger mx-2">Капитан
+              </a>
+              <a
+                href="game/{{game.id}}/{{team.id}}" target="_self"
+                (click)="gameAuthService.logIn({name: '2', isCaptain: false, secretVerified: true , secret: teamSecret,
+      game: {id: this.game.id, name:this.game.name},
+      team: {id: this.team.id, name:this.team.name},
+      type: 'game-layout'})"
+                class="btn  btn-warning mx-2">Обычный
+              </a>
+            </div>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <!--Админская вход-->
+
+
+
+        </div>
+        <div class="card-footer">
+          <div class="feedback text-muted">
+            Код вы можете узнать капитана команды или на странице информации о регистрации.
+          </div>
+        </div>
+      </div>
+
+      <!--Устройство не поддерживается-->
+      <div *ngIf="!detectRTC.isWebRTCSupported || !detectRTC.isWebSocketsSupported || detectRTC.isWebSocketsBlocked">
+        <div class="card-header text-danger"><b> Игра с вашего устройства не поддерживается.</b></div>
+        <div class="card-footer">
+          <button class="btn btn-block btn-outline-primary" (click)="router.navigate(['/equipment-check'])"> Технические
+            требования
+          </button>
+        </div>
+      </div>
+      <!--Устройство не поддерживается-->
+
+      <div class="card-body" *ngIf="secretVerified">
+<!--        <label class="h4 border-bottom mb-3">Заполните данные о себе для игры</label>-->
+
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label border-right">Имя:
+            <span class="text-danger"> *</span>
+          </label>
+          <div class="col-sm-10">
+            <input type="text"
+                   [(ngModel)]="playerName"
+                   id="nameInput"
+                   class="form-control"
+                   placeholder="Имя (обязательно)">
+          </div>
+        </div>
+
+        <div
+          *ngIf="queryParamIsCaptain"
+          class="alert alert-warning alert-dismissible fade show" role="alert">
+          Капитан команды заполняет форму ответов, остальные игроки участвуют в обсуждениях в командном видео-чате. <br>
+          <strong>Заранее</strong> договоритесь со своей командой кто является капитаном. <br>
+          Форма ответов должна заполняться только <strong>одним</strong> человеком!
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div
+          *ngIf="queryParamIsCaptain"
+          class="form-group row m-0">
+          <div class="col-sm-2 col-form-label border-right">Вы капитан?</div>
+          <div class="col-sm-10">
+            <div class="custom-control custom-switch">
+              <input
+                class="custom-control-input"
+                type="checkbox"
+                name="isNewTeamRegistration"
+                id="isCaptain"
+                [checked]="isCaptain"
+                (change)="isCaptain=!isCaptain">
+
+              <label
+                class="custom-control-label"
+                for="isCaptain">
+              <span *ngIf="isCaptain"
+              >Да, я капитан </span>
+
+                <span *ngIf="!isCaptain"
+                >Нет, я не капитан </span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="card-footer"
+           *ngIf="secretVerified">
+        <button
+          *ngIf="secretVerified"
+          [disabled]="!playerName && secretVerified"
+          class="btn  btn-secondary"
+          [ngClass]="{'btn-success': playerName}"
+          (click)="authorisation()"
+        >Перейти к игре
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

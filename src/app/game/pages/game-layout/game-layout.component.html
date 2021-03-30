@@ -1,0 +1,405 @@
+<div class="w-100 h-100 bg-dark" *ngIf="!game && !team && !player">
+  <app-loading-fire textColor="light" text="Загрузка игры ... "></app-loading-fire>
+</div>
+
+
+<div id="gameContainer" class="h-100 w-100 m-0 bg-dark" *ngIf="game && team && player">
+
+
+  <div #gameNav class="p-1">
+    <div class="bg-dark card">
+      <div class="text-center text-light row m-0 border-0 navbar navbar-expand-lg navbar-dark card-header">
+        <a class="navbar-brand p-0 m-0 col-auto" href="#">
+          <img src="../../../../assets/logo.png" height="40px" class="d-inline-block align-top" alt="">
+        </a>
+        <h1 class="d-block d-lg-none m-0 col text-truncate"
+            placement="bottom"
+            [ngbTooltip]="'Название игры'"
+            tooltipClass="my-custom-class"
+        >{{game.name}}</h1>
+        <button class="navbar-toggler col-auto" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse justify-content-center navbar-collapse text-center col" id="navbarNavDropdown">
+          <hr class=" d-sm-block d-lg-none">
+          <h1 class="m-0 col p-0 d-none d-lg-block">
+        <span placement="bottom"
+              [ngbTooltip]="'Название игры'"
+              tooltipClass="my-custom-class"
+        >{{game.name}}</span>
+            <span> | </span>
+            <span placement="bottom"
+                  [ngbTooltip]="'Название команды'"
+                  tooltipClass="my-custom-class"
+            >{{team.name}}</span>
+            <span class="text-muted"
+                  placement="bottom"
+                  [ngbTooltip]="'Сатус игры'"
+                  tooltipClass="my-custom-class"
+                  *ngIf="game.state == 0"
+            > | ИГРА ЕЩЕ НЕ НАЧАЛАСЬ</span>
+            <span class="text-muted"
+                  placement="bottom"
+                  [ngbTooltip]="'Сатус игры'"
+                  tooltipClass="my-custom-class"
+                  *ngIf="game.state == 2"
+            > | ПЕРЕРЫВ</span>
+            <span class="text-muted"
+                  placement="bottom"
+                  [ngbTooltip]="'Сатус игры'"
+                  tooltipClass="my-custom-class"
+                  *ngIf="game.state == 4"
+            > | ИГРА ЗАКОНЧИЛАСЬ</span>
+          </h1>
+          <div class=" d-none d-lg-block btn-group dropleft col-auto p-0">
+            <button type="button"
+                    class="btn btn-secondary dropdown-toggle"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false">
+              {{player.name}}
+            </button>
+            <div class="dropdown-menu bg-secondary mr-2 p-0">
+              <div class="card-header p-1 m-0 border-0">
+                <p class="text-center m-0 text-light">Вы можете выйти и зайти в игру с другими учетными данными</p>
+                <hr class="m-1 mb-2">
+                <a class="btn btn-danger btn-block" href="game/{{game.id}}/{{team.id}}/auth" target="_self"
+                   (click)="gameAuthService.logOut()">Выйти</a>
+              </div>
+            </div>
+          </div>
+          <div class=" d-sm-block d-lg-none btn-group col-auto p-0">
+            <div class="p-0 mr-2">
+              <p><span class="text-muted">Вы зашли как:</span> {{player.name}} {{player.isCaptain ? '| капитан' : ''}}
+              </p>
+              <hr>
+              <p class="text-center p-1 m-0 text-muted">Вы можете выйти и зайти в игру с другими учетными данными</p>
+              <a class="btn btn-danger" href="game/{{game.id}}/{{team.id}}/auth" target="_self"
+                 (click)="gameAuthService.logOut()">Выйти</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--0 - игра еще не началась
+  <div *ngIf="game.state == 0"
+       class="row m-0 bg-dark card overflow-hidden"
+       [ngStyle]="{'height': 'calc(100% - '+(gameNav.offsetHeight)+'px)'}"
+       >
+    <div class="w-100 h-100 overflow-auto"
+         *ngIf="game"
+         [ngStyle]="{'background':game?'fixed #000 center repeat-x url('+game.poster+')':''}">
+      <div class=" min-vh-100 row align-items-center m-0 p-2 p-md-5" style="-webkit-backdrop-filter:  opacity(60%) blur(15px);backdrop-filter: opacity(60%) blur(15px)">
+        <div class="card col  bg-dark text-light text-center mx-auto p-0"
+             style="max-width: 1076px;box-shadow: 0 80px 60px -60px rgba(21, 21, 21, 0.57), 0 -80px 60px -60px rgba(21, 21, 21, 0.57)">
+
+
+
+
+          <div class="text-center text-light row m-0  navbar navbar-collapse navbar-dark card-header accordion" id="accordionExample">
+
+            <h1  id="navBarGameName"
+                 class="col collapse  show text-truncate m-0 ">
+              <span  class="text-muted"> Игра еще не началась</span>
+            </h1>
+
+          </div>
+
+
+
+
+          <div class="card-body text-left">
+            <div class="row align-items-center mx-0 mb-4 mb-lg-3 ">
+              <div class="col-lg-5 px-0 mb-2 mb-lg-0 pb-2 pb-lg-0">
+                <img class="rounded w-100" src="{{game.poster}}">
+              </div>
+              <div class="col-lg-7 mx-2 mx-lg-0 px-0 px-lg-4 pt-2 pt-lg-0">
+                <div class=" text-left">
+                  <span class="text-muted"><u>Краткое описание</u>: </span>
+                  <span class="text-light">{{game.shortDescription}}</span>
+                  <hr>
+                  <span class="text-muted"><u>Тематика игры</u>: </span>
+                  <span class="text-light">{{game.theme}}</span>
+                  <hr>
+                  <span class="text-muted"><u>Дата и время проведения</u>: </span> <span
+                  class="text-light">{{game.dateTime | date:'d MMMM y (EEEE) в HH:mm'}}</span>
+
+                  <div class="border-left pl-2 ml-3">
+                    <span class="text-muted">Сбор с: </span>
+                    <span class="text-primary">{{game.dateTime | date:'HH:mm'}}</span>
+                    <br>
+                    <span class="text-muted">Начало в: </span>
+                    <span class="text-primary">{{newDate(game.dateTime) | date:'HH:mm'}}</span>
+                  </div>
+
+
+                </div>
+              </div>
+            </div>
+            <div id="fullDescription"
+                 class="text-light"></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+
+  </div>
+-->
+  <!-- 1-3(игра идет) и  4(игра закончилась, но не закрыта) -->
+  <div *ngIf="game.state >= 0 && game.state!=5 "
+       class="row m-0 mx-auto"
+       [ngStyle]="{'height': 'calc(100% - '+(gameNav.offsetHeight )+'px)'}">
+    <div [hidden]="(!game.showChat) && game.state==4" class=" card border-0 p-0 m-0 bg-dark rounded-0 h-100"
+         [ngClass]="{'h-auto': deviceWidth<960 && (!localShowChat || !game.showChat || game.state==0), 'col-lg-4': game.state==4, 'col-lg-6': game.state!=4 }">
+      <div class="p-1 my-0  my-lg-auto">
+        <div *ngIf="game.state!=4 "
+             class="p-0 card bg-dark  overflow-hidden"
+             [ngClass]="{'card-img-top': game.showChat && localShowChat && !player.isCaptain, 'my-auto': (!game.showChat || !localShowChat)&& !player.isCaptain }"
+             [ngStyle]="{'box-shadow': ((!game.showChat || !localShowChat) && !player.isCaptain && deviceWidth>960)?'0 80px 60px -60px rgba(21, 21, 21, 0.57), 0 -80px 60px -60px rgba(21, 21, 21, 0.57)':'' }">
+          <app-broadcasting *ngIf="game.showBroadcast && game.mediaServer.isWork"
+                            class="card card-img-top bg-transparent border-0 overflow-hidden"
+                            loadingText="Загрузка плеера ..."
+                            [domain]="game.mediaServer.domain"
+                            [subdomain] = "game.mediaServer.subdomain"
+                            [port]="game.mediaServer.port"
+                            id="appBroadcasting"
+                            loadingTextColor="light"
+                            [soundControlPermission]="true"></app-broadcasting>
+          <div *ngIf="!game.showBroadcast">
+            <img src="{{game.posterUrl}}"
+                 class="card-img"
+                 style=" box-shadow: inset 0 0 20px 10px rgba(0,0,0,0.6);
+                       opacity:0.6;
+                       -moz-opacity:0.6;
+                       -khtml-opacity: 0.6;
+                       background-color:#000;
+                       filter: blur(15px);">
+            <app-loading-fire class="card-img-overlay" text="Ожидание трансляции" textColor="light"></app-loading-fire>
+          </div>
+        </div>
+      </div>
+
+      <!--Переключение чата и формы ответов-->
+
+      <div
+        *ngIf="!localShowChat && ((player && !player.isCaptain) || (player && player.isCaptain && game.state==4)) && game.showChat && game.state!=0"
+        class=" card-header card p-2 m-0 justify-content-between m-1 text-center">
+        <button (click)="localShowChat = !localShowChat"
+                class="btn btn-secondary mx-2"
+        > {{localShowChat ? 'Скрыть общий чат' : 'Показать общий чат'}}</button>
+      </div>
+
+      <div *ngIf="game.state!=0" [hidden]="!localShowChat || (!game.showChat && !player.isCaptain)"
+           class="card-body card bg-dark m-1 p-0 ">
+        <!--переключение чат-форма-->
+        <div *ngIf="player && player.isCaptain && game.state!=4"
+             class="p-0 m-0 m-1 mr-3 text-center rounded row bg-dark"
+             style="position: absolute; z-index: 1; right: 0;"
+        >
+          <div class="btn-group dropleft">
+            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false"></button>
+            <div id="dropdown-menuToggleChatForm" class="dropdown-menu bg-dark  p-0 ">
+
+              <button (click)="chatAndFormSwitcher = 'chat'"
+                      [ngClass]="{
+                    'btn-secondary': chatAndFormSwitcher == 'chat',
+                    'btn-outline-secondary': chatAndFormSwitcher != 'chat'
+                    }"
+                      *ngIf="game.state!=4 && game.showChat"
+                      class="btn mr-2"
+              >Общий чат
+              </button>
+              <button (click)="chatAndFormSwitcher = 'answerForm'"
+                      [ngClass]="{ 'btn-secondary': chatAndFormSwitcher == 'answerForm',
+                                 'btn-outline-secondary': chatAndFormSwitcher != 'answerForm'}"
+                      class="btn"
+                      *ngIf="game.state!=4"
+              >Форма ответов
+              </button>
+
+            </div>
+          </div>
+        </div>
+        <!---->
+
+        <!--скрыть чат-->
+        <div *ngIf="localShowChat && ((player && !player.isCaptain) || (player && player.isCaptain && game.state==4)) && game.showChat "
+             class="p-0 m-0 m-1 mr-3 text-center rounded row bg-dark"
+             style="position: absolute; z-index: 1; right: 0;"
+        >
+          <div class="btn-group dropleft">
+            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false"></button>
+            <div id="dropdown-menuHideChat" class="dropdown-menu bg-dark  p-0 ">
+              <button (click)="localShowChat = !localShowChat"
+                      class="btn btn-secondary btn-block"
+              >{{localShowChat ? 'Скрыть чат' : 'Показать общий чат'}}</button>
+
+            </div>
+          </div>
+        </div>
+        <!---->
+
+        <app-chat
+          *ngIf="game.showChat && game.state!=0"
+          id="chat"
+          [hidden]="chatAndFormSwitcher != 'chat' || !localShowChat"
+          class="card-body m-0 p-0"
+          [roomId]="game.id"
+          [teamName]="team.name"
+          [userName]="player.name"></app-chat>
+        <div class="card-footer pl-2 p-1 pr-0"
+             *ngIf=" game.showChat && chatAndFormSwitcher == 'chat' && localShowChat && game.state!=0">
+          <div id="chatInputGroup"
+               #chatInputGroup
+               class="input-group bg-dark border-0 card-footer px-2 pt-2 pb-1 ">
+            <input type="text"
+                   class="form-control bg-dark text-light border-secondary"
+                   placeholder="Напишите сообщение ..."
+                   id="chatInput"
+                   (keyup.enter)="sendButton.click() "
+                   [ngClass]="{'is-valid': chatInput.value.trim()!='' }"
+                   #chatInput>
+            <div class="input-group-append">
+              <button class="align-middle btn btn-outline-secondary"
+                      type="button"
+                      #sendButton
+                      id="sendButton"
+                      [ngClass]="{'btn-outline-success': chatInput.value.trim()!='' }"
+                      (mouseover)="sendButtonText.hidden = false"
+                      (mouseout)="sendButtonText.hidden = true"
+                      (click)="chatComponent.sendMessage(chatInput.value.trim());chatInput.value='';chatInput.focus()">
+        <span class="my-auto">
+            <svg class="bi bi-arrow-up-circle" width="1.3em" height="1.3em" viewBox="0 0 16 16" fill="currentColor"
+                 xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+              <path fill-rule="evenodd"
+                    d="M4.646 8.354a.5.5 0 0 0 .708 0L8 5.707l2.646 2.647a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 0 0 0 .708z"/>
+              <path fill-rule="evenodd" d="M8 11.5a.5.5 0 0 0 .5-.5V6a.5.5 0 0 0-1 0v5a.5.5 0 0 0 .5.5z"/>
+            </svg>
+          </span>
+                <span #sendButtonText hidden class="ml-2">Отправить</span></button>
+            </div>
+          </div>
+        </div>
+
+        <app-answer-form
+          class="card-body m-0 p-0"
+          [answers] = "game.answers"
+          (save) = "saveAnswers()"
+          [team] = "this.team"
+          *ngIf="player && player.isCaptain && game.state!=4 && game.state!=0"
+          [hidden]="chatAndFormSwitcher != 'answerForm'"
+          [step] = "game.step"
+        ></app-answer-form>
+
+
+
+      </div>
+      <!--Переключение чата и формы ответов-->
+
+    </div>
+
+    <div class=" card border-0 p-1 m-0 bg-dark rounded-0 h-100"
+         [ngClass]="{'col-lg-6':game.state!=4,'col-lg-12': !game.showChat && game.state==4,'col-lg-8': game.showChat && game.state==4}">
+
+
+      <div *ngIf="!userMediaPermissions" class="row p-0 m-0 w-100  h-100 align-items-center px-2 px-lg-5 ">
+        <div class="col p-0 m-0 card bg-secondary">
+          <h1 class="card-header text-center"> Доступ к видео-чату.</h1>
+          <div class="card-body text-center">
+            Для доступа к видео-конференции приложениею необходиму получить доступ к вашей камере и микрофону.
+            <div class="text-dark">
+              <svg width="10em" height="10em" viewBox="0 0 16 16" class="bi bi-people" fill="currentColor"
+                   xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                      d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.978-1h7.956a.274.274 0 0 0 .014-.002l.008-.002c-.002-.264-.167-1.03-.76-1.72C13.688 10.629 12.718 10 11 10c-1.717 0-2.687.63-3.24 1.276-.593.69-.759 1.457-.76 1.72a1.05 1.05 0 0 0 .022.004zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816zM4.92 10c-1.668.02-2.615.64-3.16 1.276C1.163 11.97 1 12.739 1 13h3c0-1.045.323-2.086.92-3zM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
+              </svg>
+            </div>
+            <div *ngIf="showBadUserMediaPermissions" class="alert alert-warning alert-dismissible fade show mb-0"
+                 role="alert">
+              <strong>Не удалось </strong> получить доступ к вашей камере и/или микрофону.
+              <hr>
+              <strong>Обновите страницу</strong> и попробуйте снова
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          </div>
+          <div class="card-footer text-center">
+            Выберите <strong>разрешить</strong> когда браузер спросит разрешения.
+          </div>
+        </div>
+      </div>
+
+
+      <app-jitsi
+        *ngIf="userMediaPermissions"
+        class="card-body h-100 w-100 card  p-0 bg-dark"></app-jitsi>
+    </div>
+  </div>
+  <!--5 - игра закрыта-->
+  <div *ngIf="game.state == 5"
+       class="row m-0 bg-dark card overflow-hidden"
+       [ngStyle]="{'height': 'calc(100% - '+(gameNav.offsetHeight)+'px)'}"
+  ><!--style="height: calc(100% - 63px)"-->
+    <img class="card-img bg-dark align-middle" src="{{game.posterUrl}}"
+         style="min-width: 100%;min-height: 100%; background-repeat: no-repeat; background-size: cover; background-position: center center; filter: blur(10px) brightness(50%);">
+    <div class="p-5 card-img-overlay overflow-auto">
+      <div class="card bg-dark">
+        <h1 class="card-header text-light text-center"
+            placement="bottom"
+            [ngbTooltip]="'Статус игры'"
+            tooltipClass="my-custom-class"
+        >Игра уже закончилась</h1>
+        <div class="card-body">
+
+          <div class="row align-items-center m-0">
+            <img class="col-5" src="{{game.posterUrl}}">
+            <div class="col-7 border-left">
+              <span class="text-muted"><u>Краткое описание</u>: </span> <span
+              class="text-light">{{game.shortDescription}}</span>
+              <hr>
+              <span class="text-muted"><u>Полное описание</u>: </span> <span
+              class="text-light">{{game.fullDescription}}</span>
+              <hr>
+              <span class="text-muted"><u>Тематика игры</u>: </span> <span class="text-light">{{game.tags}}</span>
+              <hr>
+              <span class="text-muted"><u>Дата и время проведения</u>: </span> <span
+              class="text-light">{{game.dateTime | date:'d MMMM y (EEEE) в HH:m'}}</span>
+            </div>
+          </div>
+        </div>
+        <!--<h1 class="card-header text-light text-center"
+        >Команды победители</h1>
+        <div class="card-body">
+          <div class="row align-items-center m-0 card-deck">
+            <div class="card bg-transparent border-secondary"
+                 *ngFor="let gameTeamId of Object.keys(game.gameOutcome); index as gameTeamIndex">
+              <h1 class="card-header text-center m-0">
+                <b class="text-primary">{{gameTeamIndex + 1}}</b> <span class=" text-muted"> место</span>
+              </h1>
+              <div class="card-body pt-1">
+                <h2 class="card-title text-center text-light mb-1"><u>{{game.gameOutcome[gameTeamId]['teamName']}}</u>
+                </h2>
+                <footer class="blockquote-footer text-muted">{{game.gameOutcome[gameTeamId]['teamId']}}</footer>
+
+              </div>
+            </div>
+          </div>
+        </div>-->
+        <div class="card-footer">
+          <button class="btn btn-danger btn-block btn-lg" (click)="router.navigate([''])">Вернуться на главную страницу
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

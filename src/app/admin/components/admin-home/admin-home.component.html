@@ -1,0 +1,43 @@
+<div class="mx-auto mt-2" style="max-width: 1076px">
+
+
+
+  <div class="card bg-dark ">
+    <h1 class="card-header text-light text-center m-0">
+      <span class="text-muted">{{nearestGame ? 'Ближайшая игра:' : 'Загрузка ближайшей игры'}}</span>
+      {{nearestGame ? nearestGame.name : null}}</h1>
+    <div class="card-body overflow-auto p-md-3" style="max-height: 300px">
+      <app-loading-fire *ngIf="!nearestGame"
+                        class="overflow-hidden w-100 card bg-secondary"
+                        text=""
+                        textColor="light"
+                        style="min-height: 300px"
+      ></app-loading-fire>
+      <div *ngIf="nearestGame" class="row align-items-center h-100 m-0">
+        <img class="col-md-5 p-sm-2" src="{{nearestGame.poster}}">
+        <div class="col-md-7 ">
+          <span class="text-muted"><u>Краткое описание</u>: </span> <span
+          class="text-light">{{nearestGame.shortDescription}}</span>
+          <hr>
+          <span class="text-muted"><u>Тематика игры</u>: </span> <span
+          class="text-light">{{nearestGame.theme}}</span>
+          <hr>
+          <span class="text-muted"><u>Дата и время проведения</u>: </span> <span
+          class="text-light">{{nearestGame.dateTime | date:'d MMMM y (EEEE) в HH:m'}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer text-center">
+      <a *ngIf="nearestGame" href="admin/game-holding/{{nearestGame.id}}" target="_blank" class="btn btn-success m-2">
+        Перейти на страницу проведения игры
+      </a>
+      <a *ngIf="nearestGame" disabled href="#" target="_blank" class="btn btn-primary m-2 disabled">
+        Перейти на страницу редактирования игры
+      </a>
+    </div>
+  </div>
+
+
+
+
+</div>

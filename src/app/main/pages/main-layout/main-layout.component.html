@@ -1,0 +1,195 @@
+<!--<nav #nav id="nav" class="navbar navbar-expand-lg fixed-top navbar-dark card-header"
+     [ngClass]="{'bg-dark': deviceWidth<960}">
+  <a class="navbar-brand p-0" href="#">
+    <img src="../../../../assets/logo.png" height="40px" class="d-inline-block align-top" alt="">
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+          aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse justify-content-between navbar-collapse text-center" id="navbarNavDropdown">
+    <div *ngIf="deviceWidth<960" class="dropdown-divider"></div>
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="#nearestGame">Ближайшая игра</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">О нас</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Об играх</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Наша команда</a>
+      </li>
+    </ul>
+    <div *ngIf="deviceWidth<960" class="dropdown-divider"></div>
+    <div>
+      <a class="btn btn-sm btn-outline-secondary border-0 p-1 m-1" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg"
+             width="20px" height="20px"
+             viewBox="0 0 511.962 511.962" xml:space="preserve">
+            <path style="fill:#1E88E5;" d="M250.503,400.807h30.592c0,0,9.248-1.024,13.952-6.112c4.352-4.672,4.192-13.44,4.192-13.44
+              s-0.608-41.056,18.464-47.104c18.784-5.952,42.912,39.68,68.48,57.248c19.328,13.28,34.016,10.368,34.016,10.368l68.384-0.96
+              c0,0,35.776-2.208,18.816-30.336c-1.376-2.304-9.888-20.8-50.848-58.816c-42.88-39.808-37.12-33.344,14.528-102.176
+              c31.456-41.92,44.032-67.52,40.096-78.464c-3.744-10.432-26.88-7.68-26.88-7.68l-76.928,0.448c0,0-5.696-0.768-9.952,1.76
+              c-4.128,2.496-6.784,8.256-6.784,8.256s-12.192,32.448-28.448,60.032c-34.272,58.208-48,61.28-53.6,57.664
+              c-13.024-8.416-9.76-33.856-9.76-51.904c0-56.416,8.544-79.936-16.672-86.016c-8.384-2.016-14.528-3.36-35.936-3.584
+              c-27.456-0.288-50.72,0.096-63.872,6.528c-8.768,4.288-15.52,13.856-11.392,14.4c5.088,0.672,16.608,3.104,22.72,11.424
+              c7.904,10.72,7.616,34.848,7.616,34.848s4.544,66.4-10.592,74.656c-10.4,5.664-24.64-5.888-55.2-58.72
+              c-15.648-27.04-27.488-56.96-27.488-56.96s-2.272-5.568-6.336-8.544c-4.928-3.616-11.84-4.768-11.84-4.768l-73.152,0.448
+              c0,0-10.976,0.32-15.008,5.088c-3.584,4.256-0.288,13.024-0.288,13.024s57.28,133.984,122.112,201.536
+              C182.983,404.871,250.503,400.807,250.503,400.807L250.503,400.807z"/>
+          </svg>
+
+      </a>
+      <a class="btn btn-sm btn-outline-secondary border-0 p-1 m-1" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg"
+             width="20px" height="20px"
+             viewBox="0 0 511.962 511.962" xml:space="preserve">
+            <g>
+              <path style="fill:#F44336;" d="M490.24,113.92c-13.888-24.704-28.96-29.248-59.648-30.976C399.936,80.864,322.848,80,256.064,80
+                c-66.912,0-144.032,0.864-174.656,2.912c-30.624,1.76-45.728,6.272-59.744,31.008C7.36,138.592,0,181.088,0,255.904
+                C0,255.968,0,256,0,256c0,0.064,0,0.096,0,0.096v0.064c0,74.496,7.36,117.312,21.664,141.728
+                c14.016,24.704,29.088,29.184,59.712,31.264C112.032,430.944,189.152,432,256.064,432c66.784,0,143.872-1.056,174.56-2.816
+                c30.688-2.08,45.76-6.56,59.648-31.264C504.704,373.504,512,330.688,512,256.192c0,0,0-0.096,0-0.16c0,0,0-0.064,0-0.096
+                C512,181.088,504.704,138.592,490.24,113.92z"/>
+              <polygon style="fill:#FAFAFA;" points="192,352 192,160 352,256 	"/>
+            </g>
+          </svg>
+      </a>
+      <a class="btn btn-sm btn-outline-secondary border-0 p-1 m-1" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg"
+             width="20px" height="20px"
+             viewBox="0 0 511.962 511.962" xml:space="preserve">
+            <linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="-46.0041" y1="634.1208" x2="-32.9334"
+                            y2="647.1917" gradientTransform="matrix(32 0 0 -32 1519 20757)">
+              <stop offset="0" style="stop-color:#FFC107"/>
+              <stop offset="0.507" style="stop-color:#F44336"/>
+              <stop offset="0.99" style="stop-color:#9C27B0"/>
+            </linearGradient>
+          <path style="fill:url(#SVGID_1_);" d="M352,0H160C71.648,0,0,71.648,0,160v192c0,88.352,71.648,160,160,160h192
+              c88.352,0,160-71.648,160-160V160C512,71.648,440.352,0,352,0z M464,352c0,61.76-50.24,112-112,112H160c-61.76,0-112-50.24-112-112
+              V160C48,98.24,98.24,48,160,48h192c61.76,0,112,50.24,112,112V352z"/>
+          <linearGradient id="SVGID_2_" gradientUnits="userSpaceOnUse" x1="-42.2971" y1="637.8279" x2="-36.6404"
+                          y2="643.4846" gradientTransform="matrix(32 0 0 -32 1519 20757)">
+              <stop offset="0" style="stop-color:#FFC107"/>
+            <stop offset="0.507" style="stop-color:#F44336"/>
+            <stop offset="0.99" style="stop-color:#9C27B0"/>
+            </linearGradient>
+          <path style="fill:url(#SVGID_2_);" d="M256,128c-70.688,0-128,57.312-128,128s57.312,128,128,128s128-57.312,128-128
+              S326.688,128,256,128z M256,336c-44.096,0-80-35.904-80-80c0-44.128,35.904-80,80-80s80,35.872,80,80
+              C336,300.096,300.096,336,256,336z"/>
+          <linearGradient id="SVGID_3_" gradientUnits="userSpaceOnUse" x1="-35.5456" y1="644.5793" x2="-34.7919"
+                          y2="645.3331" gradientTransform="matrix(32 0 0 -32 1519 20757)">
+              <stop offset="0" style="stop-color:#FFC107"/>
+            <stop offset="0.507" style="stop-color:#F44336"/>
+            <stop offset="0.99" style="stop-color:#9C27B0"/>
+            </linearGradient>
+          <circle style="fill:url(#SVGID_3_);" cx="393.6" cy="118.4" r="17.056"/>
+          </svg>
+      </a>
+    </div>
+  </div>
+</nav>-->
+<nav #nav id="nav" class="navbar navbar-expand-lg fixed-top navbar-dark card-header bg-dark">
+  <a class="navbar-brand p-0" href="#">
+    <img src="../../../../assets/logo.png" height="40px" class="d-inline-block align-top" alt="">
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+          aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse justify-content-between navbar-collapse text-center" id="navbarNavDropdown">
+    <div class=" d-sm-block d-lg-none  dropdown-divider"></div>
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="#nearestGame">Ближайшая игра</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">О нас</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Об играх</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Наша команда</a>
+      </li>
+    </ul>
+    <div class="d-sm-block d-lg-none dropdown-divider"></div>
+    <div>
+      <a class="btn btn-sm btn-outline-secondary border-0 p-1 m-1" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg"
+             width="20px" height="20px"
+             viewBox="0 0 511.962 511.962" xml:space="preserve">
+            <path style="fill:#1E88E5;" d="M250.503,400.807h30.592c0,0,9.248-1.024,13.952-6.112c4.352-4.672,4.192-13.44,4.192-13.44
+              s-0.608-41.056,18.464-47.104c18.784-5.952,42.912,39.68,68.48,57.248c19.328,13.28,34.016,10.368,34.016,10.368l68.384-0.96
+              c0,0,35.776-2.208,18.816-30.336c-1.376-2.304-9.888-20.8-50.848-58.816c-42.88-39.808-37.12-33.344,14.528-102.176
+              c31.456-41.92,44.032-67.52,40.096-78.464c-3.744-10.432-26.88-7.68-26.88-7.68l-76.928,0.448c0,0-5.696-0.768-9.952,1.76
+              c-4.128,2.496-6.784,8.256-6.784,8.256s-12.192,32.448-28.448,60.032c-34.272,58.208-48,61.28-53.6,57.664
+              c-13.024-8.416-9.76-33.856-9.76-51.904c0-56.416,8.544-79.936-16.672-86.016c-8.384-2.016-14.528-3.36-35.936-3.584
+              c-27.456-0.288-50.72,0.096-63.872,6.528c-8.768,4.288-15.52,13.856-11.392,14.4c5.088,0.672,16.608,3.104,22.72,11.424
+              c7.904,10.72,7.616,34.848,7.616,34.848s4.544,66.4-10.592,74.656c-10.4,5.664-24.64-5.888-55.2-58.72
+              c-15.648-27.04-27.488-56.96-27.488-56.96s-2.272-5.568-6.336-8.544c-4.928-3.616-11.84-4.768-11.84-4.768l-73.152,0.448
+              c0,0-10.976,0.32-15.008,5.088c-3.584,4.256-0.288,13.024-0.288,13.024s57.28,133.984,122.112,201.536
+              C182.983,404.871,250.503,400.807,250.503,400.807L250.503,400.807z"/>
+          </svg>
+
+      </a>
+      <a class="btn btn-sm btn-outline-secondary border-0 p-1 m-1" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg"
+             width="20px" height="20px"
+             viewBox="0 0 511.962 511.962" xml:space="preserve">
+            <g>
+              <path style="fill:#F44336;" d="M490.24,113.92c-13.888-24.704-28.96-29.248-59.648-30.976C399.936,80.864,322.848,80,256.064,80
+                c-66.912,0-144.032,0.864-174.656,2.912c-30.624,1.76-45.728,6.272-59.744,31.008C7.36,138.592,0,181.088,0,255.904
+                C0,255.968,0,256,0,256c0,0.064,0,0.096,0,0.096v0.064c0,74.496,7.36,117.312,21.664,141.728
+                c14.016,24.704,29.088,29.184,59.712,31.264C112.032,430.944,189.152,432,256.064,432c66.784,0,143.872-1.056,174.56-2.816
+                c30.688-2.08,45.76-6.56,59.648-31.264C504.704,373.504,512,330.688,512,256.192c0,0,0-0.096,0-0.16c0,0,0-0.064,0-0.096
+                C512,181.088,504.704,138.592,490.24,113.92z"/>
+              <polygon style="fill:#FAFAFA;" points="192,352 192,160 352,256 	"/>
+            </g>
+          </svg>
+      </a>
+      <a class="btn btn-sm btn-outline-secondary border-0 p-1 m-1" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg"
+             width="20px" height="20px"
+             viewBox="0 0 511.962 511.962" xml:space="preserve">
+            <linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="-46.0041" y1="634.1208" x2="-32.9334"
+                            y2="647.1917" gradientTransform="matrix(32 0 0 -32 1519 20757)">
+              <stop offset="0" style="stop-color:#FFC107"/>
+              <stop offset="0.507" style="stop-color:#F44336"/>
+              <stop offset="0.99" style="stop-color:#9C27B0"/>
+            </linearGradient>
+          <path style="fill:url(#SVGID_1_);" d="M352,0H160C71.648,0,0,71.648,0,160v192c0,88.352,71.648,160,160,160h192
+              c88.352,0,160-71.648,160-160V160C512,71.648,440.352,0,352,0z M464,352c0,61.76-50.24,112-112,112H160c-61.76,0-112-50.24-112-112
+              V160C48,98.24,98.24,48,160,48h192c61.76,0,112,50.24,112,112V352z"/>
+          <linearGradient id="SVGID_2_" gradientUnits="userSpaceOnUse" x1="-42.2971" y1="637.8279" x2="-36.6404"
+                          y2="643.4846" gradientTransform="matrix(32 0 0 -32 1519 20757)">
+              <stop offset="0" style="stop-color:#FFC107"/>
+            <stop offset="0.507" style="stop-color:#F44336"/>
+            <stop offset="0.99" style="stop-color:#9C27B0"/>
+            </linearGradient>
+          <path style="fill:url(#SVGID_2_);" d="M256,128c-70.688,0-128,57.312-128,128s57.312,128,128,128s128-57.312,128-128
+              S326.688,128,256,128z M256,336c-44.096,0-80-35.904-80-80c0-44.128,35.904-80,80-80s80,35.872,80,80
+              C336,300.096,300.096,336,256,336z"/>
+          <linearGradient id="SVGID_3_" gradientUnits="userSpaceOnUse" x1="-35.5456" y1="644.5793" x2="-34.7919"
+                          y2="645.3331" gradientTransform="matrix(32 0 0 -32 1519 20757)">
+              <stop offset="0" style="stop-color:#FFC107"/>
+            <stop offset="0.507" style="stop-color:#F44336"/>
+            <stop offset="0.99" style="stop-color:#9C27B0"/>
+            </linearGradient>
+          <circle style="fill:url(#SVGID_3_);" cx="393.6" cy="118.4" r="17.056"/>
+          </svg>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="h-100 w-100 overflow-auto" [ngStyle]="{ 'padding-top': (nav.offsetHeight )+'px'}">
+
+  <div class="h-100 w-100 overflow-auto">
+    <router-outlet> </router-outlet>
+  </div>
+</div>
+

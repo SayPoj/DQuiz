@@ -1,0 +1,89 @@
+<div class=" px-2 mx-auto  my-2 " style="max-width: 1076px">
+  <div class="card p-0">
+    <div class="card-header row m-0 text-center justify-content-between">
+      <h1 class="m-0 align-middle ">{{ viewDate | calendarDate: view + 'ViewTitle':locale | titlecase}}</h1>
+      <div class="col-md-auto p-0">
+        <div class="btn-group">
+          <div class="btn btn-primary"
+               mwlCalendarPreviousView
+               [view]="view"
+               [(viewDate)]="viewDate"
+               (viewDateChange)="viewDateChange.next(viewDate)"
+          >Предыдущий месяц</div>
+
+          <div class="btn btn-outline-secondary"
+               mwlCalendarToday
+               [(viewDate)]="viewDate"
+               (viewDateChange)="viewDateChange.next(viewDate)"
+          >Текущий месяц</div>
+
+          <div class="btn btn-primary"
+               mwlCalendarNextView
+               [view]="view"
+               [(viewDate)]="viewDate"
+               (viewDateChange)="viewDateChange.next(viewDate)"
+          >Следующий месяц </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="calendarContainer" class="p-0 card-body dark-theme" >
+
+      <div *ngIf="events$" [ngSwitch]="view">
+        <mwl-calendar-month-view
+          [viewDate]="viewDate"
+          [events]="events$"
+          [activeDayIsOpen]="activeDayIsOpen"
+          [refresh]="refresh"
+          (dayClicked)="dayClicked($event.day)"
+          [weekStartsOn]="1"
+          (eventClicked)="eventClicked($event.event)"
+        >
+        </mwl-calendar-month-view>
+
+        <!---->
+
+        <h1 class="mt-2 mb-0 card-header">
+          Игры в текущем месяце
+        </h1>
+
+
+          <table class=" text-center table table-bordered table-striped">
+            <thead class="thead-dark">
+            <tr>
+              <th scope="col">Название игры</th>
+              <th scope="col">Дата</th>
+              <th scope="col">Взаимодействие</th>
+            </tr>
+            </thead>
+
+            <tbody *ngIf="monthEvents()">
+            <tr *ngFor="let event of monthEvents()">
+              <td>
+                {{event.title}}
+              </td>
+
+              <td>
+                {{event.start | date: 'dd.MM.yyyy в HH:MM' }}
+              </td>
+
+              <td *ngIf="event.title == 'Добавить игру'">
+                <button class="btn btn-outline-primary" (click)="createGame(event.start)">
+                  Создать
+                </button>
+              </td>
+              <td *ngIf="event.title != 'Добавить игру'">
+                <button class="btn mx-2 btn-outline-primary" (click)="openGameEditor(event.meta.game.id)">
+                  Редактировать
+                </button>
+                <button class="btn mx-2 btn-outline-success" (click)="openGameHolding(event.meta.game.id)">
+                  Проведение
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+      </div>
+    </div>
+  </div>
+</div>

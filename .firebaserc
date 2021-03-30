@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "quidrive": {
+      "hosting": {
+        "DQuiz": [
+          "quidrive"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "qu-drive"
+  }
+}

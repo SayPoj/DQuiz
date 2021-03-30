@@ -1,0 +1,10 @@
+<div id="scrollContainer" *ngIf="game"
+     class="text-light overflow-auto card-body card bg-dark border-0 border-secondary rounded-0 my-1 p-0">
+  <div id="scrollContainer1" *ngFor="let some of game.teams">
+    <div class="card-body p-0" *ngFor="let gameTeam of game.teams">
+      <div class=" m-0 p-0 mt-1 mx-1 rounded  border-bottom-0 text-center">
+        <h1 class="display-4"><b style="color: #FD4596">{{gameTeam.teamName}}</b></h1>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,288 @@
+<div class="w-100 h-100 bg-dark" *ngIf="!game">
+  <app-loading-fire text="Загрузка данных ..." textColor="light"></app-loading-fire>
+</div>
+<div class="w-100 h-100 overflow-auto"
+     *ngIf="game"
+     [ngStyle]="{'background':game?'fixed #000 center repeat-x url('+game.posterUrl+')':''}">
+  <div class=" min-vh-100 row align-items-center m-0 p-2 p-md-5"
+       style="-webkit-backdrop-filter:  opacity(60%) blur(15px);backdrop-filter: opacity(60%) blur(15px)">
+    <div class="card col  bg-dark text-light text-center mx-auto p-0"
+         style="max-width: 1076px;box-shadow: 0 80px 60px -60px rgba(21, 21, 21, 0.57), 0 -80px 60px -60px rgba(21, 21, 21, 0.57)">
+
+
+      <div class="text-center text-light row m-0  navbar navbar-collapse navbar-dark card-header accordion"
+           id="accordionExample">
+        <a class="col-auto navbar-brand p-0 m-0" href="#">
+          <img src="../../../../assets/logo.png" height="40px" class="d-inline-block align-top" alt="">
+        </a>
+        <h1 id="navBarGameName"
+            class="col collapse  show text-truncate m-0 "
+        >{{game.name}}
+          <span class="text-muted"> | Регистрация</span>
+          <span *ngIf="game.state == 4 || game.state == 5" class="text-muted"> | Игра уже закончилась</span>
+        </h1>
+        <button id="collapseTwoBtn"
+                class="navbar-toggler col-auto collapse show"
+                data-toggle="collapse"
+                data-target="#navbarNavDropdown,#navBarGameName">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse justify-content-center navbar-collapse text-center" id="navbarNavDropdown">
+          <hr>
+          <h1 class=" col m-0 text-center">
+            <span class="text-muted">Страница регистрации команды на игру "</span>
+            <span>{{game ? game.name : ''}}</span>
+            <span class="text-muted">"</span>
+            <span *ngIf="game.state == 4 || game.state == 5" class="text-muted"> | Игра уже закончилась</span>
+          </h1>
+          <hr>
+          <div class="row justify-content-center">
+            <div class="col-auto">
+              <button class=" m-1 btn btn-outline-primary"
+                      (click)="this.router.navigate(['game/'+game.id])">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-bar-left" fill="currentColor"
+                     xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd"
+                        d="M12.5 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5zM10 8a.5.5 0 0 1-.5.5H3.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L3.707 7.5H9.5a.5.5 0 0 1 .5.5z"/>
+                </svg>
+                <span class="ml-2 d-inline text-truncate">На страницу игры</span>
+              </button>
+            </div>
+            <div class="col-auto">
+              <button class="m-1 btn btn-outline-danger"
+                      (click)="this.router.navigate([''])">
+                <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-box-arrow-left" fill="currentColor"
+                     xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd"
+                        d="M4.354 11.354a.5.5 0 0 0 0-.708L1.707 8l2.647-2.646a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708 0z"/>
+                  <path fill-rule="evenodd" d="M11.5 8a.5.5 0 0 0-.5-.5H2a.5.5 0 0 0 0 1h9a.5.5 0 0 0 .5-.5z"/>
+                  <path fill-rule="evenodd"
+                        d="M14 13.5a1.5 1.5 0 0 0 1.5-1.5V4A1.5 1.5 0 0 0 14 2.5H7A1.5 1.5 0 0 0 5.5 4v1.5a.5.5 0 0 0 1 0V4a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5H7a.5.5 0 0 1-.5-.5v-1.5a.5.5 0 0 0-1 0V12A1.5 1.5 0 0 0 7 13.5h7z"/>
+                </svg>
+                <span class="ml-2 d-inline text-truncate">На главную страницу</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="card-body">
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+          Регистрация на игру проводится для <strong>команд</strong>. <br>
+          <strong>Каждому</strong> участнику по отдельности проходить регистрацию <strong>не нужно</strong>. <br>
+          Регистрацию команды должен проводить <strong>капитан команды</strong>.
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="row align-items-center mx-0 mb-4 mb-lg-3 ">
+          <div class="col-lg-5 px-0 mb-2 mb-lg-0 pb-2 pb-lg-0">
+            <img class="rounded w-100" src="{{game.posterUrl}}">
+          </div>
+          <div class="col-lg-7 mx-2 mx-lg-0 px-0 px-lg-4 pt-2 pt-lg-0">
+            <div class=" text-left">
+              <span class="text-muted"><u>Краткое описание</u>: </span>
+              <span class="text-light">{{game.shortDescription}}</span>
+              <hr *ngIf="game.tags.length">
+              <div class="row m-0" *ngIf="game.tags.length">
+                <span class="text-muted my-auto mr-2"><u>Тематика игры</u>: </span>
+                <mat-chip-list>
+                  <mat-chip *ngFor="let tag of game.tags" [selectable]="false" [removable]="false">
+                    {{tag.name}}
+                  </mat-chip>
+                </mat-chip-list>
+              </div>
+              <hr>
+              <span class="text-muted"><u>Дата и время проведения</u>: </span> <span
+              class="text-light">{{game.dateTime | date:'d MMMM y (EEEE) в HH:mm'}}</span>
+
+              <div class="border-left pl-2 ml-3">
+                <span class="text-muted">Сбор с: </span>
+                <span class="text-primary">{{game.dateTime | date:'HH:mm'}}</span>
+                <br>
+                <span class="text-muted">Начало в: </span>
+                <span class="text-primary">{{newDate(game.dateTime) | date:'HH:mm'}}</span>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+          Проверьте свое оборудование перед игрой и ознакомьтесь с технически требованиями <a
+          href="/equipment-check"
+          target="_blank"
+        ><strong><u>на странице технических требований.</u></strong></a>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+
+        <mat-vertical-stepper
+          *ngIf="game.state!=4 && game.state!=5 && team"
+          class="card bg-dark text-left"
+          [linear]="true">
+
+          <mat-step [completed]="team.name.trim()!='' && teamNameMatchChecking() && team.name.length>=4">
+            <ng-template matStepLabel><h3 class="text-light m-0 border-bottom">Данные команды</h3></ng-template>
+            <div class="p-lg-3 p-1 card-body">
+              <div class="form-group">
+                <label for="teamName">
+                  Название команды
+                  <span class="text-danger"
+                        *ngIf="team.name.trim()==''|| team.name.trim().length < 4 || !teamNameMatchChecking()">*</span>
+                  <span class="text-danger"
+                        *ngIf="team.name.trim().length < 4"> | минимальная длинна названия 4 символа</span>
+                </label>
+                <input
+                  id="teamName"
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="team.name"
+                  placeholder="Название команды"
+                  [ngClass]="{
+                  'is-valid': team.name && team.name.trim()!='' && team.name.length>=4 && teamNameMatchChecking(),
+                  'is-invalid': !team.name || !teamNameMatchChecking() || team.name.length < 4 || team.name.trim()==''}"
+                  (keyup)="teamNameMatchChecking()">
+
+                <div class="invalid-feedback" *ngIf="!teamNameMatchChecking()">
+                  Команда с таким названием уже существует. Попробуйте придумать что-то еще!
+                </div>
+              </div>
+            </div>
+            <button
+              class="btn btn-secondary ml-3"
+              [ngClass]="{ 'btn-success': team.name && teamNameMatchChecking() && team.name.trim().length>=4}"
+              [disabled]=" !team.name || !teamNameMatchChecking() || team.name.trim().length < 4"
+              matStepperNext>Далее
+            </button>
+          </mat-step>
+
+          <mat-step
+            [completed]="team.captain.name.trim()!='' && team.captain.phoneNumber.trim()!='' && team.captain.surname.trim()!='' && team.captain.email.trim()!='' && team.captain.phoneNumber.trim().search('_')==-1 && team.captain.email.trim().search('_')==-1">
+            <ng-template matStepLabel><h3 class="text-light m-0 border-bottom ">Данные капитана</h3></ng-template>
+            <div class="p-3 card-body">
+              <div class="form-group">
+                <label for="captainFullNameInputGroup">Полное имя
+                  <span class="text-danger"
+                        *ngIf="!team.captain.name.trim() && !team.captain.surname.trim()">*</span></label>
+                <div id="captainFullNameInputGroup" class="form-group form-row">
+                  <input
+                    [(ngModel)]="team.captain.surname"
+                    type="text"
+                    class="form-control col-md"
+                    placeholder="Фамилия"
+                    [ngClass]="{ 'is-invalid': !team.captain.surname.trim() }">
+
+                  <input
+                    [(ngModel)]="team.captain.name"
+                    type="text"
+                    class="form-control col-md mx-2"
+                    placeholder="Имя"
+                    [ngClass]="{ 'is-invalid': !team.captain.name.trim() }">
+
+                  <input
+                    [(ngModel)]="team.captain.lastName"
+                    type="text"
+                    class="form-control col-md "
+                    placeholder="Отчество | необязательно">
+
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="captainEmailInput">
+                  Электронная почта
+                  <span class="text-danger" *ngIf="!team.captain.email.trim() || team.captain.email.trim().search('_')!=-1">*</span>
+                </label>
+                <input
+                  id="captainEmailInput"
+                  [(ngModel)]="team.captain.email"
+                  type="email"
+                  [textMask]="{mask: emailMask}"
+                  class="form-control "
+                  placeholder="mail@example.ru"
+                  [ngClass]="{ 'is-invalid': !team.captain.email.trim() || team.captain.email.trim().search('_')!=-1}">
+                <div class="feedback text-secondary my-auto ">
+                  Используйте основную почту для получения информации об игре
+                </div>
+
+              </div>
+              <div class="form-group">
+                <label for="captainTelInput">Номер телефона
+                  <span class="text-danger"
+                        *ngIf="!team.captain.phoneNumber.trim() || team.captain.phoneNumber.trim().length<1 ">*</span>
+                </label>
+
+                <input
+                  id="captainTelInput"
+                  class="form-control"
+                  type="tel"
+                  [(ngModel)]="team.captain.phoneNumber"
+                  [textMask]="{mask: phoneNumberMask}"
+                  placeholder="+7 (___) ___-____"
+                  [ngClass]="{ 'is-invalid': !team.captain.phoneNumber || team.captain.phoneNumber.trim().search('_')!=-1}">
+
+              </div>
+            </div>
+
+
+            <button
+              class="btn btn-primary ml-3" matStepperPrevious>Назад
+            </button>
+            <button
+              class="btn btn-secondary ml-3"
+              [ngClass]="{ 'btn-success': team.captain.name && team.captain.phoneNumber && team.captain.surname && team.captain.email && team.captain.phoneNumber.trim().search('_')==-1 }"
+              [disabled]="!team.captain.name || !team.captain.phoneNumber || !team.captain.surname || !team.captain.email && team.captain.phoneNumber.trim().search('_')==-1"
+              matStepperNext
+            >Далее
+            </button>
+
+          </mat-step>
+
+          <mat-step>
+            <ng-template matStepLabel><h3 class="text-light m-0 border-bottom ">Отправка данных</h3></ng-template>
+            <div class="p-3 card-body ">
+              <label for="showResultInfoCard">Проверьте правильность</label>
+              <div id="showResultInfoCard">
+                <span class="text-muted">Название команды: </span> {{team.name}}
+                <hr>
+                <div class="row m-0 p-0">
+                  <span class="text-muted p-0 mr-1 col-auto">Данные капитана: </span>
+                  <div class="col p-0 border-left border-muted pl-1">
+                  <span
+                    class="text-muted">Полное имя: </span>{{team.captain.surname}} {{team.captain.name}} {{team.captain.lastName}}
+                    <br>
+                    <span class="text-muted">Email: </span>{{team.captain.email}}<br>
+                    <span class="text-muted">Номер телефона: </span> {{team.captain.phoneNumber}}<br>
+                  </div>
+                </div>
+                <hr>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="checkOfComplianceWithTechnicalRequirements"
+                       (change)="checkOfComplianceWithTechnicalRequirements = !checkOfComplianceWithTechnicalRequirements">
+                <label class="form-check-label" for="checkOfComplianceWithTechnicalRequirements">
+                  Я ознакомился с
+                  <a href="/equipment-check" target="_blank">техническими требованиями </a>
+                  и понял их
+                </label>
+              </div>
+            </div>
+            <button class="btn btn-primary ml-3" matStepperPrevious>Назад</button>
+            <button class="btn btn-success ml-3"
+                    [disabled]="!checkOfComplianceWithTechnicalRequirements"
+                    (click)="submit()">Подтвердить
+            </button>
+          </mat-step>
+        </mat-vertical-stepper>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
